@@ -1,7 +1,11 @@
 package gov.ce.fortaleza.lembrete.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.MappedSuperclass;
 
 /**
  * Created by berkson
@@ -10,6 +14,9 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseDescriptionClass extends BaseClass{
+@Getter
+@Setter
+@MappedSuperclass
+public class BaseDescriptionClass extends BaseClass {
     private String description;
 }
