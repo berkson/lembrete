@@ -23,12 +23,11 @@ import java.util.List;
 @AttributeOverride(name = "id", column = @Column(name = "reminder_id"))
 @Entity
 public class Reminder extends BaseClass {
-    private String contractNumber;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "contract_id", referencedColumnName = "contract_id")
+    private Contract contract;
     @OneToOne
     private Company company;
-    @OneToOne
-    @JoinColumn(name = "contract_type_id", referencedColumnName = "contract_type_id")
-    private ContractType contractType;
     private LocalDate initialDate;
     private LocalDate extendedDate;
     @ManyToMany

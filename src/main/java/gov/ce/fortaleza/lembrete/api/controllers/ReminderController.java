@@ -1,4 +1,4 @@
-package gov.ce.fortaleza.lembrete.controllers;
+package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.domain.Reminder;
 import lombok.extern.slf4j.Slf4j;

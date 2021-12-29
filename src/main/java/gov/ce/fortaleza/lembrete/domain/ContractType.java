@@ -1,9 +1,6 @@
 package gov.ce.fortaleza.lembrete.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,6 +19,17 @@ import java.util.List;
 @Table(name = "contracts_type")
 @AttributeOverride(name = "id", column = @Column(name = "contract_type_id"))
 public class ContractType extends BaseDescriptionClass {
+
+    @Builder
+    public ContractType(String description, Integer maxValidity) {
+        super(description);
+        this.maxValidity = maxValidity;
+    }
+
+    public ContractType(Integer maxValidity) {
+        this.maxValidity = maxValidity;
+    }
+
     private Integer maxValidity;
     @OneToMany
     @JoinTable(name = "types_alerts",
