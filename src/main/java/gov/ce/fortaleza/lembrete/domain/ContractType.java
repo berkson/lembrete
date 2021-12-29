@@ -3,8 +3,10 @@ package gov.ce.fortaleza.lembrete.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by berkson
@@ -18,7 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "contracts_type")
 @AttributeOverride(name = "id", column = @Column(name = "contract_type_id"))
-public class ContractType extends BaseDescriptionClass {
+public class ContractType extends BaseDescriptionClass implements Comparable<ContractType> {
 
     @Builder
     public ContractType(String description, Integer maxValidity) {
@@ -36,4 +38,25 @@ public class ContractType extends BaseDescriptionClass {
             joinColumns = @JoinColumn(name = "contract_type_id"),
             inverseJoinColumns = @JoinColumn(name = "alert_id"))
     private List<Alert> alerts = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContractType ct = (ContractType) o;
+        return Objects.equals(this.getId(), ct.getId()) &&
+                Objects.equals(maxValidity, ct.maxValidity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), maxValidity);
+    }
+
+    @Override
+    public int compareTo(ContractType contractType) {
+        Collator brCollator = Collator.getInstance();
+        brCollator.setStrength(Collator.PRIMARY);
+        return brCollator.compare(this.getDescription(), contractType.getDescription());
+    }
 }
