@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "alerts")
+@Table(name = "alerts", uniqueConstraints = {@UniqueConstraint(columnNames = {"time_cod", "time"})})
 @AttributeOverride(name = "id", column = @Column(name = "alert_id"))
 public class Alert extends BaseClass {
 
