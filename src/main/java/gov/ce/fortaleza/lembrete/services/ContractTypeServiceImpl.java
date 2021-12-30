@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @Service
 public class ContractTypeServiceImpl implements ContractTypeService {
 
-    private ContractTypeRepository contractTypeRepository;
-    private ContractTypeMapper contractTypeMapper;
+    private final ContractTypeRepository contractTypeRepository;
+    private final ContractTypeMapper contractTypeMapper;
 
     public ContractTypeServiceImpl(ContractTypeRepository contractTypeRepository,
                                    ContractTypeMapper contractTypeMapper) {
@@ -30,8 +30,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     public List<ContractTypeDTO> getAllContractTypes() {
         return this.contractTypeRepository
                 .findAll().stream()
-                .map(type -> contractTypeMapper
-                        .contractTypeToContractTypeDTO(type))
+                .map(contractTypeMapper::contractTypeToContractTypeDTO)
                 .collect(Collectors.toList());
     }
 
@@ -48,6 +47,11 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     @Override
     public List<ContractType> saveAll(List<ContractType> contractTypes) {
         return this.contractTypeRepository.saveAll(contractTypes);
+    }
+
+    @Override
+    public ContractType findByDescription(String description) {
+        return this.contractTypeRepository.findContractTypeByDescription(description);
     }
 
 

@@ -18,4 +18,6 @@ public interface ContractTypeService {
     ContractType save(ContractType contractType);
 
     List<ContractType> saveAll(List<ContractType> contractTypes);
+
+    ContractType findByDescription(String description);
 }

@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 21:40
  */
 public interface ContractTypeRepository extends JpaRepository<ContractType, Long> {
+    ContractType findContractTypeByDescription(String description);
 }
