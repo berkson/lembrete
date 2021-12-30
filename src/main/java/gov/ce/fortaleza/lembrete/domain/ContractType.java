@@ -1,6 +1,9 @@
 package gov.ce.fortaleza.lembrete.domain;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.text.Collator;
@@ -14,7 +17,6 @@ import java.util.Objects;
  * Time: 23:08
  */
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -23,17 +25,15 @@ import java.util.Objects;
 public class ContractType extends BaseDescriptionClass implements Comparable<ContractType> {
 
     @Builder
-    public ContractType(String description, Integer maxValidity) {
-        super(description);
+    public ContractType(Long id, String description, Integer maxValidity, List<Alert> alerts) {
+        super(id, description);
         this.maxValidity = maxValidity;
+        this.alerts = alerts;
     }
 
-    public ContractType(Integer maxValidity) {
-        this.maxValidity = maxValidity;
-    }
 
     private Integer maxValidity;
-    @OneToMany
+    @ManyToMany
     @JoinTable(name = "types_alerts",
             joinColumns = @JoinColumn(name = "contract_type_id"),
             inverseJoinColumns = @JoinColumn(name = "alert_id"))

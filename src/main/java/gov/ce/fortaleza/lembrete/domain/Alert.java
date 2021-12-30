@@ -1,12 +1,13 @@
 package gov.ce.fortaleza.lembrete.domain;
 
 import gov.ce.fortaleza.lembrete.enums.TimeCode;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by berkson
@@ -16,16 +17,30 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "alerts")
-public class Alert {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "alert_id")
-    private Long id;
-    @Column(name = "time_cod", columnDefinition = "CHAR NOT NULL")
+@AttributeOverride(name = "id", column = @Column(name = "alert_id"))
+public class Alert extends BaseClass {
+
+    @Builder
+    public Alert(Long id, TimeCode timeCode, Integer time) {
+        super(id);
+        this.timeCode = timeCode;
+        this.time = time;
+    }
+
+    public Alert(TimeCode timeCode, Integer time) {
+        this.timeCode = timeCode;
+        this.time = time;
+    }
+
+    @Column(name = "time_cod", columnDefinition = "bpchar(1) NOT NULL")
     @Enumerated(EnumType.STRING)
     private TimeCode timeCode;
     private Integer time;
+    @ManyToMany
+    @JoinTable(name = "types_alerts",
+            joinColumns = @JoinColumn(name = "alert_id"),
+            inverseJoinColumns = @JoinColumn(name = "contract_type_id"))
+    private List<ContractType> contractTypes;
 }

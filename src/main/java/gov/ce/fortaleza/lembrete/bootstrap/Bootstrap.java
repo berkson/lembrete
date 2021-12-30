@@ -1,6 +1,10 @@
 package gov.ce.fortaleza.lembrete.bootstrap;
 
+import gov.ce.fortaleza.lembrete.domain.Alert;
 import gov.ce.fortaleza.lembrete.domain.ContractType;
+import gov.ce.fortaleza.lembrete.enums.ContractTypes;
+import gov.ce.fortaleza.lembrete.enums.TimeCode;
+import gov.ce.fortaleza.lembrete.services.AlertService;
 import gov.ce.fortaleza.lembrete.services.ContractTypeService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -17,40 +21,81 @@ import java.util.List;
 public class Bootstrap implements CommandLineRunner {
 
     private final ContractTypeService contractTypeService;
+    private final AlertService alertService;
 
-    public Bootstrap(ContractTypeService contractTypeService) {
+    public Bootstrap(ContractTypeService contractTypeService, AlertService alertService) {
         this.contractTypeService = contractTypeService;
+        this.alertService = alertService;
     }
 
     @Override
     public void run(String... args) {
-        if (this.contractTypeService.count() == 0) {
-            createContractTypes();
-        }
+        List<Alert> alerts = null;
+        if (this.alertService.count() == 0) alerts = this.createAlertTypes();
+        if (this.contractTypeService.count() == 0) this.createContractTypes(alerts);
     }
 
-    private void createContractTypes() {
+    private void createContractTypes(List<Alert> alerts) {
         List<ContractType> contractTypes = Arrays
                 .asList(ContractType.builder()
-                                .description("Aquisição de bens").maxValidity(12).build(),
+                                .description(ContractTypes.AQUISICAO_BENS.getType())
+                                .maxValidity(12)
+                                .alerts(Arrays.asList(
+                                        alerts.get(0), alerts.get(3)
+                                ))
+                                .build(),
                         ContractType.builder()
-                                .description("Serviços de prestação continuada")
-                                .maxValidity(60).build(),
+                                .description(ContractTypes.SERVICO_CONTINUADO.getType())
+                                .maxValidity(60)
+                                .alerts(Arrays.asList(
+                                        alerts.get(2), alerts.get(3)
+                                ))
+                                .build(),
                         ContractType.builder()
-                                .description("Contrato Excepcional")
-                                .maxValidity(12).build(),
+                                .description(ContractTypes.EXCEPCIONAL.getType())
+                                .maxValidity(12)
+                                .alerts(Arrays.asList(
+                                        alerts.get(1), alerts.get(3)
+                                ))
+                                .build(),
                         ContractType.builder()
-                                .description("Contrato Emergencial")
-                                .maxValidity(6).build(),
+                                .description(ContractTypes.EMERGENCIAL.getType())
+                                .maxValidity(6)
+                                .alerts(Arrays.asList(
+                                        alerts.get(1)
+                                ))
+                                .build(),
                         ContractType.builder()
-                                .description("Convênio")
-                                .maxValidity(60).build(),
+                                .description(ContractTypes.CONVENIO.getType())
+                                .maxValidity(60)
+                                .alerts(Arrays.asList(
+                                        alerts.get(2)
+                                ))
+                                .build(),
                         ContractType.builder()
-                                .description("Acordo de Cooperação")
-                                .maxValidity(60).build(),
+                                .description(ContractTypes.COOP.getType())
+                                .maxValidity(60)
+                                .alerts(Arrays.asList(
+                                        alerts.get(2)
+                                ))
+                                .build(),
                         ContractType.builder()
-                                .description("Termos de credenciamento")
-                                .maxValidity(60).build());
+                                .description(ContractTypes.CREDENCIA.getType())
+                                .maxValidity(60)
+                                .alerts(Arrays.asList(
+                                        alerts.get(2)
+                                ))
+                                .build());
         this.contractTypeService.saveAll(contractTypes);
+    }
+
+    private List<Alert> createAlertTypes() {
+        List<Alert> alerts = Arrays
+                .asList(Alert.builder().time(30).timeCode(TimeCode.D).build(),
+                        Alert.builder().time(60).timeCode(TimeCode.D).build(),
+                        Alert.builder().time(2).timeCode(TimeCode.M).build(),
+                        Alert.builder().time(6).timeCode(TimeCode.M).build()
+                );
+        return this.alertService.saveAll(alerts);
     }
 }

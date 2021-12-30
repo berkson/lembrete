@@ -1,6 +1,5 @@
 package gov.ce.fortaleza.lembrete.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,10 +12,18 @@ import javax.persistence.MappedSuperclass;
  * Time: 23:30
  */
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @MappedSuperclass
 public class BaseDescriptionClass extends BaseClass {
     private String description;
+
+    public BaseDescriptionClass(Long id, String description) {
+        super(id);
+        this.description = description;
+    }
+
+    public BaseDescriptionClass(String description) {
+        this.description = description;
+    }
 }
