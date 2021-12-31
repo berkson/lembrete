@@ -27,11 +27,13 @@ public class Reminder extends BaseClass {
     @JoinColumn(name = "contract_id", referencedColumnName = "contract_id")
     private Contract contract;
     @OneToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "company_id")
     private Company company;
     private LocalDate initialDate;
     private LocalDate extendedDate;
     @ManyToMany
-    @JoinTable(name = "contacts", joinColumns = @JoinColumn(name = "reminder_id"),
-            inverseJoinColumns = @JoinColumn(name = "interested_id"))
+    @JoinTable(name = "contacts", joinColumns = @JoinColumn(name = "reminder_id", referencedColumnName = "reminder_id"),
+            inverseJoinColumns = @JoinColumn(name = "interested_id", referencedColumnName = "interested_id"),
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"reminder_id", "interested_id"})})
     private List<Interested> interesteds = new ArrayList<>();
 }

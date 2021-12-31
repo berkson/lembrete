@@ -15,6 +15,7 @@ import java.io.Serializable;
 @Setter
 @Entity
 @IdClass(PhonePK.class)
+@Table(name = "phones")
 public class Phone implements Serializable {
     @Id
     private String tel;

@@ -1,6 +1,8 @@
 package gov.ce.fortaleza.lembrete.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;
 
@@ -14,6 +16,7 @@ import javax.sql.DataSource;
 @Configuration
 @Profile({"default", "dev"})
 @PropertySource("classpath:lembretedb-dev.properties")
+@EnableAutoConfiguration
 public class DataBaseConfig {
 
     @Value("${db.user}")
@@ -27,6 +30,7 @@ public class DataBaseConfig {
 
     @Primary
     @Bean(name = "lembretedb")
+    @QuartzDataSource
     public DataSource postgresDataSource() {
 
         return DataSourceBuilder

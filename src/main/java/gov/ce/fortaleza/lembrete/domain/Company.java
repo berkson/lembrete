@@ -5,9 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by berkson
@@ -19,7 +18,8 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "companies")
+@Table(name = "companies", uniqueConstraints = @UniqueConstraint(columnNames = {"cnpj"}))
+@AttributeOverride(name = "id", column = @Column(name = "company_id"))
 public class Company extends BaseClass {
     @Column(unique = true, length = 14)
     private String cnpj;

@@ -35,8 +35,9 @@ public class ContractType extends BaseDescriptionClass implements Comparable<Con
     private Integer maxValidity;
     @ManyToMany
     @JoinTable(name = "types_alerts",
-            joinColumns = @JoinColumn(name = "contract_type_id"),
-            inverseJoinColumns = @JoinColumn(name = "alert_id"))
+            joinColumns = @JoinColumn(name = "contract_type_id", referencedColumnName = "contract_type_id"),
+            inverseJoinColumns = @JoinColumn(name = "alert_id", referencedColumnName = "alert_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"contract_type_id", "alert_id"}))
     private List<Alert> alerts = new ArrayList<>();
 
     @Override
