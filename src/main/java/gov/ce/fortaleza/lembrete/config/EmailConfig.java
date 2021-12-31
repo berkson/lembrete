@@ -1,8 +1,10 @@
 package gov.ce.fortaleza.lembrete.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -12,18 +14,19 @@ import java.util.Properties;
 /**
  * Classe de configuração para envio de email
  * 
- * @author berkson
- * @since 13/07/2020
+ * @author Berkson Ximenes
+ * @since 31/12/2021
  */
 @Configuration
+@PropertySource("classpath:sendemail.properties")
 public class EmailConfig {
-    
-    private final Environment env;
-    
-    @Autowired
-    public EmailConfig(Environment env) {
-        this.env = env;
-    }
+
+    @Value("${email.host}")
+    private String host;
+    @Value("${email.username}")
+    private String username;
+    @Value("${email.password}")
+    private String password;
 
     /**
      * Retorna um JavaMailSender com as propriedades necessárias para o envio de
@@ -35,11 +38,11 @@ public class EmailConfig {
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-        mailSender.setHost(env.getProperty("email.host"));
+        mailSender.setHost(host);
         mailSender.setPort(587);
 
-        mailSender.setUsername(env.getProperty("email.username"));
-        mailSender.setPassword(env.getProperty("email.password"));
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

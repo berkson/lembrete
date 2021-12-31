@@ -13,7 +13,7 @@ public class Email implements Serializable {
     private static final long serialVersionUID = -911575682568098101L;
     private String[] para;
     private String assunto;
-    private String texto;
+    private String mensagem;
     private EmailPriority prioridade;
 
     public Email() {
@@ -23,14 +23,14 @@ public class Email implements Serializable {
         super();
         this.para = para;
         this.assunto = assunto;
-        this.texto = mensagem;
+        this.mensagem = mensagem;
     }
 
     public Email(String[] para, String assunto, String mensagem, EmailPriority prioridade) {
         super();
         this.para = para;
         this.assunto = assunto;
-        this.texto = mensagem;
+        this.mensagem = mensagem;
         this.prioridade = prioridade;
     }
 
@@ -58,12 +58,12 @@ public class Email implements Serializable {
         this.assunto = assunto;
     }
 
-    public String getTexto() {
-        return texto;
+    public String getMensagem() {
+        return mensagem;
     }
 
-    public void setTexto(String texto) {
-        this.texto = texto;
+    public void setMensagem(String mensagem) {
+        this.mensagem = mensagem;
     }
 
 }

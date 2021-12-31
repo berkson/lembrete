@@ -39,12 +39,12 @@ public class EmailServiceImpl implements EmailService {
      *
      * @param para destinatário do email
      * @param assunto assunto do email
-     * @param texto descrição do email
+     * @param mensagem descrição do email
      * @throws SendMailException
      */
     @Override
     public void enviarMsgSimples(String[] para, String assunto,
-            String texto) throws SendMailException {
+            String mensagem) throws SendMailException {
         MimeMessage msg = mailSender.createMimeMessage();
         MimeMessageHelper helper;
         try {
@@ -52,7 +52,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setTo(para);
             helper.setFrom(FROM);
             helper.setSubject(assunto);
-            helper.setText(texto, true);
+            helper.setText(mensagem, true);
         } catch (MessagingException e) {
             throw new SendMailException(ERRMIME);
         }
@@ -155,7 +155,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setTo(email.getPara());
             helper.setFrom(FROM);
             helper.setSubject(email.getAssunto());
-            helper.setText(email.getTexto(), true);
+            helper.setText(email.getMensagem(), true);
             msg.setHeader(PR, email.getPrioridade().toString());
         } catch (MessagingException e) {
             throw new SendMailException(ERRMIME);
