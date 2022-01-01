@@ -9,16 +9,14 @@ import java.io.Serializable;
 
 /**
  * Created by berkson
- * Date: 28/12/2021
- * Time: 22:33
+ * Date: 31/12/2021
+ * Time: 21:29
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContractTypeDTO implements Serializable {
-    private static final long serialVersionUID = 5752264780352184301L;
-    private Long id;
-    private String description;
-    private Integer maxValidity;
+public class PhoneDTO implements Serializable {
+    private static final long serialVersionUID = -2958182187925286191L;
+    private String tel;
 }

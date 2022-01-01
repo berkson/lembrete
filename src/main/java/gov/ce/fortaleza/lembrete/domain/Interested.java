@@ -27,6 +27,6 @@ public class Interested extends BaseClass {
     private String email;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "interested")
     private List<Phone> phones;
-    @ManyToMany(mappedBy = "interesteds")
+    @ManyToMany(mappedBy = "interestedList")
     private List<Reminder> reminders;
 }

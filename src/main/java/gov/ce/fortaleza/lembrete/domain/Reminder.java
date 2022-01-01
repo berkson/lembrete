@@ -35,5 +35,5 @@ public class Reminder extends BaseClass {
     @JoinTable(name = "contacts", joinColumns = @JoinColumn(name = "reminder_id", referencedColumnName = "reminder_id"),
             inverseJoinColumns = @JoinColumn(name = "interested_id", referencedColumnName = "interested_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"reminder_id", "interested_id"})})
-    private List<Interested> interesteds = new ArrayList<>();
+    private List<Interested> interestedList = new ArrayList<>();
 }
