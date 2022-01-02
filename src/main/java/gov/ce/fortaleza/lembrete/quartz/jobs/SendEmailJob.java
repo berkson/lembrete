@@ -2,12 +2,13 @@ package gov.ce.fortaleza.lembrete.quartz.jobs;
 
 import gov.ce.fortaleza.lembrete.exceptions.SendMailException;
 import gov.ce.fortaleza.lembrete.services.EmailService;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
  * Created by berkson
@@ -16,13 +17,19 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @DisallowConcurrentExecution
 @Slf4j
-public class SendEmailJob implements Job {
+public class SendEmailJob extends QuartzJobBean {
 
-    @Autowired
     private EmailService emailService;
 
+
+    @Autowired
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    protected void executeInternal(@NonNull JobExecutionContext context)
+            throws JobExecutionException {
         try {
             emailService.enviarMsgSimples("berksonx@yahoo.com.br", "Teste", "TEstando envio");
         } catch (SendMailException e) {
@@ -30,4 +37,5 @@ public class SendEmailJob implements Job {
             throw new JobExecutionException(e);
         }
     }
+
 }

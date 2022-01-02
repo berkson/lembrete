@@ -26,20 +26,20 @@ import java.time.LocalDate;
 @Slf4j
 public class TestComponent {
 
-    private ScheduleService scheduleService;
-    private Scheduler scheduler;
+    private final ScheduleService scheduleService;
+    private final Scheduler scheduler;
 
     public TestComponent(ScheduleService scheduleService, Scheduler scheduler) {
         this.scheduleService = scheduleService;
         this.scheduler = scheduler;
     }
 
-    @Scheduled(cron = "0 07 20 31 DEC ?")
+    @Scheduled(cron = "0 40 14 2 JAN ?")
     public void scheduleEmail() {
         ScheduleDataModel data = new ScheduleDataModel(
                 SendEmailJob.class, false, "TesteJob", "Teste", "primeiro teste",
                 "TesteTrigger", "Teste", "trigger de teste", LocalDate.now(),
-                "0 08 20 31 DEC ? 2021");
+                "0 41 14 2 JAN ? 2022");
         JobDetail jobDetail = scheduleService.createJobWithoutDataMap(data);
         Trigger trigger = scheduleService.createCronTrigger(data);
         try {
