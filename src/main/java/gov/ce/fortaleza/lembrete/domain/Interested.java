@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "interesteds")
+@Table(name = "interested")
 @AttributeOverride(name = "id", column = @Column(name = "interested_id"))
 @Entity
 public class Interested extends BaseClass {
