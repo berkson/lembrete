@@ -5,7 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.br.CPF;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -19,8 +23,12 @@ import java.util.List;
 @AllArgsConstructor
 public class InterestedDTO extends BaseClass {
     private static final long serialVersionUID = -2811300893110523169L;
+    @CPF
     private String cpf;
+    @Length(min = 3, max = 255)
     private String name;
+    @Email
     private String email;
+    @NotEmpty
     private List<PhoneDTO> phones;
 }

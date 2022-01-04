@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 /**
@@ -18,5 +19,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class PhoneDTO implements Serializable {
     private static final long serialVersionUID = -2958182187925286191L;
+    @Pattern(regexp = "(?:^[0]?[1-9]{2}|^[0]?[1-9]{2}[\\s]?)[9]?[1-9]\\d{3}[\\s]?\\d{4}$")
     private String tel;
 }

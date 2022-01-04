@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.br.CNPJ;
 
 /**
  * Created by berkson
@@ -16,6 +18,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyDTO extends BaseClass {
+    private static final long serialVersionUID = 5309254162188499126L;
+    @CNPJ
     private String cnpj;
+    @Length(min = 5, max = 255)
     private String name;
 }
