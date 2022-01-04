@@ -28,5 +28,5 @@ public class Interested extends BaseClass {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "interested")
     private List<Phone> phones;
     @ManyToMany(mappedBy = "interestedList")
-    private List<Reminder> reminders;
+    private List<Contract> contracts;
 }

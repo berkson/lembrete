@@ -11,7 +11,7 @@ import java.util.List;
  * Time: 21:45
  */
 public interface ContractTypeService {
-    List<ContractTypeDTO> getAllContractTypes();
+    List<ContractTypeDTO> findAll();
 
     long count();
 

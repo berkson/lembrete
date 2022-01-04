@@ -1,6 +1,6 @@
 package gov.ce.fortaleza.lembrete.api.controllers;
 
-import gov.ce.fortaleza.lembrete.domain.Reminder;
+import gov.ce.fortaleza.lembrete.domain.Contract;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Created by berkson
- * Date: 29/11/2021
+ * Date: 03/01/2022
  * Time: 22:52
  */
 @Slf4j
 @Controller
-public class ReminderController {
+public class ContractController {
 
-    @GetMapping(value = "/reminder/new")
+    @GetMapping(value = "/contract/new")
     public String newReminder(Model model){
-        model.addAttribute("reminder", new Reminder());
+        model.addAttribute("reminder", new Contract());
 
-        return "/reminder/reminderform";
+        return "/contract/contractform";
     }
 }

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by berkson
@@ -22,8 +25,16 @@ import javax.persistence.*;
 public class Contract extends BaseClass {
     private String contractNumber;
     @OneToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "company_id")
+    private Company company;
+    private LocalDate initialDate;
+    private LocalDate finalDate;
+    @OneToOne
     @JoinColumn(name = "contract_type_id", referencedColumnName = "contract_type_id")
     private ContractType contractType;
-    @OneToOne(mappedBy = "contract")
-    private Reminder reminder;
+    @ManyToMany
+    @JoinTable(name = "contacts", joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "contract_id"),
+            inverseJoinColumns = @JoinColumn(name = "interested_id", referencedColumnName = "interested_id"),
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"contract_id", "interested_id"})})
+    private List<Interested> interestedList = new ArrayList<>();
 }

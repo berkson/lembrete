@@ -28,7 +28,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     }
 
     @Override
-    public List<ContractTypeDTO> getAllContractTypes() {
+    public List<ContractTypeDTO> findAll() {
         return this.contractTypeRepository
                 .findAll().stream()
                 .sorted(Comparator.naturalOrder())
