@@ -31,7 +31,6 @@ public class ContractType extends BaseDescriptionClass implements Comparable<Con
         this.alerts = alerts;
     }
 
-
     private Integer maxValidity;
     @ManyToMany
     @JoinTable(name = "types_alerts",

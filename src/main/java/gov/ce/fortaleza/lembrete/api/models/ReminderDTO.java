@@ -1,8 +1,6 @@
 package gov.ce.fortaleza.lembrete.api.models;
 
-import gov.ce.fortaleza.lembrete.domain.Company;
-import gov.ce.fortaleza.lembrete.domain.Contract;
-import gov.ce.fortaleza.lembrete.domain.Interested;
+import gov.ce.fortaleza.lembrete.domain.BaseClass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +19,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReminderDTO implements Serializable {
+public class ReminderDTO extends BaseClass implements Serializable {
     private static final long serialVersionUID = 7827967205309389928L;
-    private Contract contract;
-    private Company company;
+    private ContractDTO contract;
+    private CompanyDTO company;
     private LocalDate initialDate;
     private LocalDate extendedDate;
     private List<InterestedDTO> interestedList;

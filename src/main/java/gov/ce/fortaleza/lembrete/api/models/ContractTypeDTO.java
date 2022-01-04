@@ -1,5 +1,6 @@
 package gov.ce.fortaleza.lembrete.api.models;
 
+import gov.ce.fortaleza.lembrete.domain.BaseDescriptionClass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +17,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContractTypeDTO implements Serializable {
+public class ContractTypeDTO extends BaseDescriptionClass implements Serializable {
     private static final long serialVersionUID = 5752264780352184301L;
-    private Long id;
-    private String description;
     private Integer maxValidity;
 }
