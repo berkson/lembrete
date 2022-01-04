@@ -15,9 +15,11 @@ public interface ContractTypeService {
 
     long count();
 
-    ContractType save(ContractType contractType);
+    ContractTypeDTO save(ContractTypeDTO contractTypeDTO);
 
     List<ContractType> saveAll(List<ContractType> contractTypes);
 
-    ContractType findByDescription(String description);
+    ContractTypeDTO findByDescription(String description);
+
+    ContractTypeDTO findById(long id);
 }

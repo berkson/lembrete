@@ -16,4 +16,6 @@ public interface ContractTypeMapper {
     ContractTypeMapper INSTANCE = Mappers.getMapper(ContractTypeMapper.class);
 
     ContractTypeDTO contractTypeToContractTypeDTO(ContractType contractType);
+
+    ContractType contractTypeDTOToContractType(ContractTypeDTO contractTypeDTO);
 }

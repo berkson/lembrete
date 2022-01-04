@@ -6,6 +6,7 @@ import gov.ce.fortaleza.lembrete.domain.ContractType;
 import gov.ce.fortaleza.lembrete.repositories.ContractTypeRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,8 +43,11 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     }
 
     @Override
-    public ContractType save(ContractType contractType) {
-        return this.contractTypeRepository.save(contractType);
+    public ContractTypeDTO save(ContractTypeDTO contractTypeDTO) {
+        ContractType contractType = contractTypeRepository
+                .save(contractTypeMapper.contractTypeDTOToContractType(contractTypeDTO));
+
+        return contractTypeMapper.contractTypeToContractTypeDTO(contractType);
     }
 
     @Override
@@ -52,8 +56,18 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     }
 
     @Override
-    public ContractType findByDescription(String description) {
-        return this.contractTypeRepository.findContractTypeByDescription(description);
+    public ContractTypeDTO findByDescription(String description) {
+        return contractTypeMapper
+                .contractTypeToContractTypeDTO(contractTypeRepository
+                        .findContractTypeByDescription(description));
+    }
+
+    @Override
+    @Transactional
+    public ContractTypeDTO findById(long id) {
+        return contractTypeMapper.contractTypeToContractTypeDTO(
+                contractTypeRepository.getById(id)
+        );
     }
 
 

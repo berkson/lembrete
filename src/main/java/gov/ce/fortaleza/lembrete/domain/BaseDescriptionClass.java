@@ -23,7 +23,4 @@ public class BaseDescriptionClass extends BaseClass {
         this.description = description;
     }
 
-    public BaseDescriptionClass(String description) {
-        this.description = description;
-    }
 }

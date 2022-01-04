@@ -6,6 +6,7 @@ import gov.ce.fortaleza.lembrete.domain.Contract;
 import gov.ce.fortaleza.lembrete.repositories.ContractRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional
     public Optional<ContractDTO> findById(Long id) {
         return Optional.ofNullable(
                 contractMapper
