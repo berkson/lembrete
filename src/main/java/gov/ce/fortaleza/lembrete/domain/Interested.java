@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +26,13 @@ public class Interested extends BaseClass {
     private String cpf;
     private String name;
     private String email;
-    @OneToMany(mappedBy = "interested", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Phone> phones;
+    @OneToMany(mappedBy = "interested", cascade = CascadeType.ALL)
+    private List<Phone> phones = new ArrayList<>();
     @ManyToMany(mappedBy = "interestedList")
-    private List<Contract> contracts;
+    private List<Contract> contracts = new ArrayList<>();
+
+    public void addInterestedToPhones(List<Phone> phones) {
+        phones.forEach(phone -> phone.setInterested(this));
+    }
+
 }

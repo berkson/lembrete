@@ -15,31 +15,28 @@ import java.util.Objects;
 @Setter
 public class PhonePK implements Serializable {
 
-    private Interested interested;
+    private Long interested;
     private String tel;
 
 
     public PhonePK() {
     }
 
-    public PhonePK(String tel, Interested interested) {
-        this.tel = tel;
+    public PhonePK(Long interested, String tel) {
         this.interested = interested;
+        this.tel = tel;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof PhonePK))
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         PhonePK phonePK = (PhonePK) o;
-        return Objects.equals(tel, phonePK.tel) &&
-                Objects.equals(interested.getId(), phonePK.interested.getId());
+        return Objects.equals(interested, phonePK.interested) && Objects.equals(tel, phonePK.tel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tel, interested.getId());
+        return Objects.hash(interested, tel);
     }
 }

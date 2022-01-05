@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,5 +26,5 @@ public class Company extends BaseClass {
     private String cnpj;
     private String name;
     @OneToMany(mappedBy = "company")
-    private List<Contract> contracts;
+    private List<Contract> contracts = new ArrayList<>();
 }

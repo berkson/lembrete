@@ -32,8 +32,11 @@ public class ContractServiceImpl implements ContractService {
     @Override
     @Transactional
     public ContractDTO save(ContractDTO entity) {
-        Contract contract = contractRepository
-                .save(contractMapper.contractDTOToContract(entity));
+        Contract contract = contractMapper.contractDTOToContract(entity);
+        contract.getInterestedList()
+                .forEach(interested -> interested
+                        .addInterestedToPhones(interested.getPhones()));
+        contractRepository.save(contract);
         return contractMapper.contractToContractDTO(contract);
     }
 

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,5 +43,5 @@ public class Alert extends BaseClass {
     @JoinTable(name = "types_alerts",
             joinColumns = @JoinColumn(name = "alert_id"),
             inverseJoinColumns = @JoinColumn(name = "contract_type_id"))
-    private List<ContractType> contractTypes;
+    private List<ContractType> contractTypes = new ArrayList<>();
 }

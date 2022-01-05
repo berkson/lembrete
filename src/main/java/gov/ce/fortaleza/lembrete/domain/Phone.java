@@ -21,14 +21,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Phone implements Serializable {
-
     @Id
-    @ManyToOne
-    @JoinColumn(name = "interested_id", referencedColumnName = "interested_id", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "interested_id",
+            referencedColumnName = "interested_id",
+            nullable = false)
     private Interested interested;
 
     @Id
     @Column(name = "tel", nullable = false)
     private String tel;
-
 }

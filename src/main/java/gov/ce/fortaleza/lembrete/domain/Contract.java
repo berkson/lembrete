@@ -32,7 +32,7 @@ public class Contract extends BaseClass {
     @OneToOne
     @JoinColumn(name = "contract_type_id", referencedColumnName = "contract_type_id", nullable = false)
     private ContractType contractType;
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "contacts", joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "contract_id"),
             inverseJoinColumns = @JoinColumn(name = "interested_id", referencedColumnName = "interested_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"contract_id", "interested_id"})})
