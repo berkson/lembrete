@@ -24,4 +24,6 @@ public class Company extends BaseClass {
     @Column(unique = true, length = 14)
     private String cnpj;
     private String name;
+    @OneToMany(mappedBy = "company")
+    private List<Contract> contracts;
 }

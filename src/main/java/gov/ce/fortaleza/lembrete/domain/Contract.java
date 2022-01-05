@@ -24,15 +24,15 @@ import java.util.List;
 @Table(name = "contracts")
 public class Contract extends BaseClass {
     private String contractNumber;
-    @OneToOne
-    @JoinColumn(name = "company_id", referencedColumnName = "company_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "company_id", referencedColumnName = "company_id", nullable = false)
     private Company company;
     private LocalDate initialDate;
     private LocalDate finalDate;
     @OneToOne
-    @JoinColumn(name = "contract_type_id", referencedColumnName = "contract_type_id")
+    @JoinColumn(name = "contract_type_id", referencedColumnName = "contract_type_id", nullable = false)
     private ContractType contractType;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "contacts", joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "contract_id"),
             inverseJoinColumns = @JoinColumn(name = "interested_id", referencedColumnName = "interested_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"contract_id", "interested_id"})})

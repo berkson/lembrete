@@ -8,4 +8,5 @@ import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
  * Time: 22:21
  */
 public interface ContractService extends CrudService<ContractDTO, Long> {
+
 }

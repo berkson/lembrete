@@ -25,7 +25,7 @@ public class Interested extends BaseClass {
     private String cpf;
     private String name;
     private String email;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "interested")
+    @OneToMany(mappedBy = "interested", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Phone> phones;
     @ManyToMany(mappedBy = "interestedList")
     private List<Contract> contracts;

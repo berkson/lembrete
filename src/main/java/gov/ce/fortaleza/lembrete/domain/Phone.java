@@ -1,6 +1,8 @@
 package gov.ce.fortaleza.lembrete.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -16,13 +18,17 @@ import java.io.Serializable;
 @Entity
 @IdClass(PhonePK.class)
 @Table(name = "phones")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Phone implements Serializable {
-    @Id
-    private String tel;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "interested_id", referencedColumnName = "interested_id")
+    @JoinColumn(name = "interested_id", referencedColumnName = "interested_id", nullable = false)
     private Interested interested;
+
+    @Id
+    @Column(name = "tel", nullable = false)
+    private String tel;
 
 }
