@@ -31,8 +31,8 @@ public class Interested extends BaseClass {
     @ManyToMany(mappedBy = "interestedList")
     private List<Contract> contracts = new ArrayList<>();
 
-    public void addInterestedToPhones(List<Phone> phones) {
-        phones.forEach(phone -> phone.setInterested(this));
+    public void addInterestedToPhones() {
+        this.phones.forEach(phone -> phone.setInterested(this));
     }
 
 }

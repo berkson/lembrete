@@ -30,16 +30,6 @@ public class Company extends BaseClass {
     @OneToMany(mappedBy = "company")
     private List<Contract> contracts = new ArrayList<>();
 
-    public void addContract(Contract contract) {
-        this.verifyContracts();
-        this.contracts.add(contract);
-    }
-
-    private void verifyContracts() {
-        if (contracts == null)
-            contracts = new ArrayList<>();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

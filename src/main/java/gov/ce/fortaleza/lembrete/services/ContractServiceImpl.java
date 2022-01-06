@@ -36,10 +36,6 @@ public class ContractServiceImpl implements ContractService {
     public ContractDTO save(ContractDTO entity) {
 
         Contract contract = contractMapper.contractDTOToContract(entity);
-        contract.getInterestedList()
-                .forEach(interested -> interested
-                        .addInterestedToPhones(interested.getPhones()));
-        contract.getCompany().addContract(contract);
         contractRepository.save(contract);
         return contractMapper.contractToContractDTO(contract);
     }
