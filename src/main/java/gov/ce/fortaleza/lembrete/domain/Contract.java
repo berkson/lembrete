@@ -24,7 +24,7 @@ import java.util.List;
 @Table(name = "contracts")
 public class Contract extends BaseClass {
     private String contractNumber;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "company_id", referencedColumnName = "company_id", nullable = false)
     private Company company;
     private LocalDate initialDate;

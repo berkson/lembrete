@@ -4,6 +4,7 @@ import gov.ce.fortaleza.lembrete.api.mappers.ContractMapper;
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
 import gov.ce.fortaleza.lembrete.domain.Contract;
 import gov.ce.fortaleza.lembrete.repositories.ContractRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
  * Date: 03/01/2022
  * Time: 22:22
  */
+@Slf4j
 @Service
 public class ContractServiceImpl implements ContractService {
 
@@ -23,7 +25,7 @@ public class ContractServiceImpl implements ContractService {
     private final ContractMapper contractMapper;
 
     public ContractServiceImpl(ContractRepository contractRepository,
-                               ContractMapper contractMapper) {
+                               ContractMapper contractMapper, CompanyService companyService) {
         this.contractRepository = contractRepository;
         this.contractMapper = contractMapper;
     }
@@ -32,10 +34,12 @@ public class ContractServiceImpl implements ContractService {
     @Override
     @Transactional
     public ContractDTO save(ContractDTO entity) {
+
         Contract contract = contractMapper.contractDTOToContract(entity);
         contract.getInterestedList()
                 .forEach(interested -> interested
                         .addInterestedToPhones(interested.getPhones()));
+        contract.getCompany().addContract(contract);
         contractRepository.save(contract);
         return contractMapper.contractToContractDTO(contract);
     }

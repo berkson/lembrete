@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by berkson
@@ -19,7 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "companies", uniqueConstraints = @UniqueConstraint(columnNames = {"cnpj"}))
+@Table(name = "companies",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"cnpj"}))
 @AttributeOverride(name = "id", column = @Column(name = "company_id"))
 public class Company extends BaseClass {
     @Column(unique = true, length = 14)
@@ -27,4 +29,27 @@ public class Company extends BaseClass {
     private String name;
     @OneToMany(mappedBy = "company")
     private List<Contract> contracts = new ArrayList<>();
+
+    public void addContract(Contract contract) {
+        this.verifyContracts();
+        this.contracts.add(contract);
+    }
+
+    private void verifyContracts() {
+        if (contracts == null)
+            contracts = new ArrayList<>();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return Objects.equals(this.getId(), company.getId()) && Objects.equals(cnpj, company.cnpj);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId(), cnpj);
+    }
 }
