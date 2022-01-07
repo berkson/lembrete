@@ -1,4 +1,4 @@
-package gov.ce.fortaleza.lembrete.services;
+package gov.ce.fortaleza.lembrete.services.common;
 
 import gov.ce.fortaleza.lembrete.api.mappers.ContractMapper;
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
@@ -54,5 +54,10 @@ public class ContractServiceImpl implements ContractService {
         return contractRepository.findAll().stream()
                 .map(contractMapper::contractToContractDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Contract getById(long id) {
+        return contractRepository.getById(id);
     }
 }

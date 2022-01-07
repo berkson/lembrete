@@ -2,68 +2,38 @@ package gov.ce.fortaleza.lembrete.models;
 
 
 import gov.ce.fortaleza.lembrete.enums.EmailPriority;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
 
 @Component
+@Getter
+@Setter
+@NoArgsConstructor
 public class Email implements Serializable {
 
     private static final long serialVersionUID = -911575682568098101L;
-    private String[] para;
-    private String assunto;
-    private String mensagem;
-    private EmailPriority prioridade;
+    private String[] to;
+    private String subject;
+    private Message message;
+    private EmailPriority priority;
 
-    public Email() {
-    }
-
-    public Email(String[] para, String assunto, String mensagem) {
+    public Email(String[] to, String subject, Message message) {
         super();
-        this.para = para;
-        this.assunto = assunto;
-        this.mensagem = mensagem;
+        this.to = to;
+        this.subject = subject;
+        this.message = message;
     }
 
-    public Email(String[] para, String assunto, String mensagem, EmailPriority prioridade) {
+    public Email(String[] to, String subject, Message message, EmailPriority priority) {
         super();
-        this.para = para;
-        this.assunto = assunto;
-        this.mensagem = mensagem;
-        this.prioridade = prioridade;
+        this.to = to;
+        this.subject = subject;
+        this.message = message;
+        this.priority = priority;
     }
-
-    public EmailPriority getPrioridade() {
-        return prioridade;
-    }
-
-    public void setPrioridade(EmailPriority prioridade) {
-        this.prioridade = prioridade;
-    }
-
-    public String[] getPara() {
-        return para;
-    }
-
-    public void setPara(String[] para) {
-        this.para = para;
-    }
-
-    public String getAssunto() {
-        return assunto;
-    }
-
-    public void setAssunto(String assunto) {
-        this.assunto = assunto;
-    }
-
-    public String getMensagem() {
-        return mensagem;
-    }
-
-    public void setMensagem(String mensagem) {
-        this.mensagem = mensagem;
-    }
-
 }

@@ -1,9 +1,9 @@
 package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
-import gov.ce.fortaleza.lembrete.services.CompanyService;
-import gov.ce.fortaleza.lembrete.services.ContractService;
-import gov.ce.fortaleza.lembrete.services.InterestedService;
+import gov.ce.fortaleza.lembrete.services.common.CompanyService;
+import gov.ce.fortaleza.lembrete.services.common.ContractService;
+import gov.ce.fortaleza.lembrete.services.common.InterestedService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,24 +32,18 @@ public class ContractController {
         this.interestedService = interestedService;
     }
 
-    //TODO: Verificar possibilidade de reduzir esse método
     @PostMapping(value = "/new")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO newContract(@RequestBody ContractDTO contractDTO) {
 
         companyService.findByCnpj(contractDTO.getCompany().getCnpj())
-                .ifPresent(contractDTO::setCompany);
+                .ifPresentOrElse(contractDTO::setCompany,
+                        () -> contractDTO.setCompany(companyService.save(contractDTO.getCompany())));
 
-        contractDTO.getInterestedList().forEach(interestedDTO -> {
-            interestedService
-                    .findByCpf(interestedDTO.getCpf())
-                    .ifPresent(interested -> interestedDTO.setId(interested.getId()));
-            if (interestedDTO.isNew())
-                interestedDTO.setId(interestedService.save(interestedDTO).getId());
-        });
-
-        if (contractDTO.getCompany().isNew())
-            contractDTO.setCompany(companyService.save(contractDTO.getCompany()));
+        contractDTO.getInterestedList().forEach(interestedDTO -> interestedService
+                .findByCpf(interestedDTO.getCpf())
+                .ifPresentOrElse(interested -> interestedDTO.setId(interested.getId()),
+                        () -> interestedDTO.setId(interestedService.save(interestedDTO).getId())));
 
         return contractService.save(contractDTO);
     }

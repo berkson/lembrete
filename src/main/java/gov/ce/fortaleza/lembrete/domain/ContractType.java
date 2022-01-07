@@ -20,18 +20,23 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "contracts_type")
+@Table(name = "contracts_type", uniqueConstraints = @UniqueConstraint(columnNames = {"contract_code"}))
 @AttributeOverride(name = "id", column = @Column(name = "contract_type_id"))
 public class ContractType extends BaseDescriptionClass implements Comparable<ContractType> {
 
+    @Column(name = "contract_code", nullable = false, length = 10)
+    private String code;
+    private Integer maxValidity;
+
     @Builder
-    public ContractType(Long id, String description, Integer maxValidity, List<Alert> alerts) {
+    public ContractType(Long id, String description, String code,
+                        Integer maxValidity, List<Alert> alerts) {
         super(id, description);
+        this.code = code;
         this.maxValidity = maxValidity;
         this.alerts = alerts;
     }
 
-    private Integer maxValidity;
     @ManyToMany
     @JoinTable(name = "types_alerts",
             joinColumns = @JoinColumn(name = "contract_type_id", referencedColumnName = "contract_type_id"),

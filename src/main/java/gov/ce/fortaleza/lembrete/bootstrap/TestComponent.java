@@ -2,7 +2,7 @@ package gov.ce.fortaleza.lembrete.bootstrap;
 
 import gov.ce.fortaleza.lembrete.models.ScheduleDataModel;
 import gov.ce.fortaleza.lembrete.quartz.jobs.SendEmailJob;
-import gov.ce.fortaleza.lembrete.services.ScheduleService;
+import gov.ce.fortaleza.lembrete.services.common.ScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;

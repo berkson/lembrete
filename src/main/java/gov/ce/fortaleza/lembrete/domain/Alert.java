@@ -44,4 +44,6 @@ public class Alert extends BaseClass {
             joinColumns = @JoinColumn(name = "alert_id"),
             inverseJoinColumns = @JoinColumn(name = "contract_type_id"))
     private List<ContractType> contractTypes = new ArrayList<>();
+    @Transient
+    private String cron;
 }

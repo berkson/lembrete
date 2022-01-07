@@ -1,7 +1,7 @@
 package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.api.models.ContractTypeDTO;
-import gov.ce.fortaleza.lembrete.services.ContractTypeService;
+import gov.ce.fortaleza.lembrete.services.common.ContractTypeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

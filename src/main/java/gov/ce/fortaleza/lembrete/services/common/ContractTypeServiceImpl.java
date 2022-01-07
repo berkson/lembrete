@@ -1,4 +1,4 @@
-package gov.ce.fortaleza.lembrete.services;
+package gov.ce.fortaleza.lembrete.services.common;
 
 import gov.ce.fortaleza.lembrete.api.mappers.ContractTypeMapper;
 import gov.ce.fortaleza.lembrete.api.models.ContractTypeDTO;
@@ -68,6 +68,12 @@ public class ContractTypeServiceImpl implements ContractTypeService {
         return contractTypeMapper.contractTypeToContractTypeDTO(
                 contractTypeRepository.getById(id)
         );
+    }
+
+    @Override
+    @Transactional
+    public ContractType getById(long id) {
+        return contractTypeRepository.getById(id);
     }
 
 

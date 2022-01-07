@@ -1,4 +1,4 @@
-package gov.ce.fortaleza.lembrete.services;
+package gov.ce.fortaleza.lembrete.services.common;
 
 
 import gov.ce.fortaleza.lembrete.enums.EmailPriority;
@@ -15,17 +15,16 @@ public interface EmailService {
      * @param para     para quem é o email
      * @param assunto  assunto do emaiç
      * @param mensagem descrição do email
-     * @throws SendMailException
+     * @throws SendMailException Erro ao enviar email
      */
     void enviarMsgSimples(String para, String assunto, String mensagem)
             throws SendMailException;
 
     /**
      * @param para       para quem é o email
-     * @param assunto    assunto do emaiç
+     * @param assunto    assunto do email
      * @param mensagem   descrição do email
      * @param prioridade prioridade do email
-     * @throws SendMailException
      */
     void enviarMsgSimples(String para, String assunto, String mensagem, EmailPriority prioridade)
             throws SendMailException;

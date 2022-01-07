@@ -1,4 +1,4 @@
-package gov.ce.fortaleza.lembrete.services;
+package gov.ce.fortaleza.lembrete.services.common;
 
 
 import gov.ce.fortaleza.lembrete.enums.EmailPriority;
@@ -20,9 +20,9 @@ import javax.mail.internet.MimeMessage;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
-    private static final String FROM = "Sistema de Controle de Ci's <appweb.amc@fortaleza.ce.gov.br>";
+    private static final String FROM = "Sistema de Lembretes <appweb.amc@fortaleza.ce.gov.br>";
     private static final String ENCODE = "UTF-8";
-    private static final String ERRMIME = "Erro ao criar Mensagem MIME";
+    private static final String ERR_MIME = "Erro ao criar Mensagem MIME";
     private static final String PR = "X-Priority";
 
     /**
@@ -54,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(assunto);
             helper.setText(mensagem, true);
         } catch (MessagingException e) {
-            throw new SendMailException(ERRMIME);
+            throw new SendMailException(ERR_MIME);
         }
 
         mailSender.send(msg);
@@ -79,7 +79,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(assunto);
             helper.setText(texto, true);
         } catch (MessagingException e) {
-            throw new SendMailException(ERRMIME);
+            throw new SendMailException(ERR_MIME);
         }
 
         mailSender.send(msg);
@@ -106,7 +106,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(texto, true);
             msg.setHeader(PR, prioridade.getPrioridade());
         } catch (MessagingException e) {
-            throw new SendMailException(ERRMIME);
+            throw new SendMailException(ERR_MIME);
         }
 
         mailSender.send(msg);
@@ -134,7 +134,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(texto, true);
             msg.setHeader(PR, prioridade.getPrioridade());
         } catch (MessagingException e) {
-            throw new SendMailException(ERRMIME);
+            throw new SendMailException(ERR_MIME);
         }
 
         mailSender.send(msg);
@@ -152,13 +152,13 @@ public class EmailServiceImpl implements EmailService {
         MimeMessageHelper helper;
         try {
             helper = new MimeMessageHelper(msg, true, ENCODE);
-            helper.setTo(email.getPara());
+            helper.setTo(email.getTo());
             helper.setFrom(FROM);
-            helper.setSubject(email.getAssunto());
-            helper.setText(email.getMensagem(), true);
-            msg.setHeader(PR, email.getPrioridade().toString());
+            helper.setSubject(email.getSubject());
+            helper.setText(email.getMessage().getText(), true);
+            msg.setHeader(PR, email.getPriority().toString());
         } catch (MessagingException e) {
-            throw new SendMailException(ERRMIME);
+            throw new SendMailException(ERR_MIME);
         }
 
         mailSender.send(msg);

@@ -10,7 +10,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +31,7 @@ public class ContractDTO extends BaseClass implements Serializable {
     @Length(min = 5, max = 255)
     @JsonProperty(value = "contract_number")
     private String contractNumber;
+    @NotNull
     private CompanyDTO company;
     @DateTimeFormat
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -37,7 +40,9 @@ public class ContractDTO extends BaseClass implements Serializable {
     @DateTimeFormat
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty(value = "final_date")
+    @Future
     private LocalDate finalDate;
+    @NotNull
     @JsonProperty(value = "contract_type")
     private ContractTypeDTO contractType;
     @NotEmpty

@@ -4,8 +4,8 @@ import gov.ce.fortaleza.lembrete.domain.Alert;
 import gov.ce.fortaleza.lembrete.domain.ContractType;
 import gov.ce.fortaleza.lembrete.enums.ContractTypes;
 import gov.ce.fortaleza.lembrete.enums.TimeCode;
-import gov.ce.fortaleza.lembrete.services.AlertService;
-import gov.ce.fortaleza.lembrete.services.ContractTypeService;
+import gov.ce.fortaleza.lembrete.services.common.AlertService;
+import gov.ce.fortaleza.lembrete.services.common.ContractTypeService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -39,49 +39,56 @@ public class Bootstrap implements CommandLineRunner {
         List<ContractType> contractTypes = Arrays
                 .asList(ContractType.builder()
                                 .description(ContractTypes.AQUISICAO_BENS.getType())
-                                .maxValidity(12)
+                                .maxValidity(ContractTypes.AQUISICAO_BENS.getValidity())
+                                .code(ContractTypes.AQUISICAO_BENS.getCode())
                                 .alerts(Arrays.asList(
                                         alerts.get(0), alerts.get(3)
                                 ))
                                 .build(),
                         ContractType.builder()
                                 .description(ContractTypes.SERVICO_CONTINUADO.getType())
-                                .maxValidity(60)
+                                .maxValidity(ContractTypes.SERVICO_CONTINUADO.getValidity())
+                                .code(ContractTypes.SERVICO_CONTINUADO.getCode())
                                 .alerts(Arrays.asList(
                                         alerts.get(2), alerts.get(3)
                                 ))
                                 .build(),
                         ContractType.builder()
                                 .description(ContractTypes.EXCEPCIONAL.getType())
-                                .maxValidity(12)
+                                .maxValidity(ContractTypes.EXCEPCIONAL.getValidity())
+                                .code(ContractTypes.EXCEPCIONAL.getCode())
                                 .alerts(Arrays.asList(
                                         alerts.get(1), alerts.get(3)
                                 ))
                                 .build(),
                         ContractType.builder()
                                 .description(ContractTypes.EMERGENCIAL.getType())
-                                .maxValidity(6)
+                                .maxValidity(ContractTypes.EMERGENCIAL.getValidity())
+                                .code(ContractTypes.EMERGENCIAL.getCode())
                                 .alerts(Arrays.asList(
                                         alerts.get(1)
                                 ))
                                 .build(),
                         ContractType.builder()
                                 .description(ContractTypes.CONVENIO.getType())
-                                .maxValidity(60)
+                                .maxValidity(ContractTypes.CONVENIO.getValidity())
+                                .code(ContractTypes.CONVENIO.getCode())
                                 .alerts(Arrays.asList(
                                         alerts.get(2)
                                 ))
                                 .build(),
                         ContractType.builder()
                                 .description(ContractTypes.COOP.getType())
-                                .maxValidity(60)
+                                .maxValidity(ContractTypes.COOP.getValidity())
+                                .code(ContractTypes.COOP.getCode())
                                 .alerts(Arrays.asList(
                                         alerts.get(2)
                                 ))
                                 .build(),
                         ContractType.builder()
                                 .description(ContractTypes.CREDENCIA.getType())
-                                .maxValidity(60)
+                                .maxValidity(ContractTypes.CREDENCIA.getValidity())
+                                .code(ContractTypes.CREDENCIA.getCode())
                                 .alerts(Arrays.asList(
                                         alerts.get(2)
                                 ))

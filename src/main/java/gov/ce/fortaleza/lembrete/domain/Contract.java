@@ -29,7 +29,7 @@ public class Contract extends BaseClass {
     private Company company;
     private LocalDate initialDate;
     private LocalDate finalDate;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "contract_type_id", referencedColumnName = "contract_type_id", nullable = false)
     private ContractType contractType;
     @ManyToMany(cascade = CascadeType.DETACH)

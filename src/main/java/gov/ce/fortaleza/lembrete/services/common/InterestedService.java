@@ -1,4 +1,4 @@
-package gov.ce.fortaleza.lembrete.services;
+package gov.ce.fortaleza.lembrete.services.common;
 
 import gov.ce.fortaleza.lembrete.api.models.InterestedDTO;
 

@@ -1,8 +1,9 @@
-package gov.ce.fortaleza.lembrete.services;
+package gov.ce.fortaleza.lembrete.services.common;
 
 import gov.ce.fortaleza.lembrete.api.models.ContractTypeDTO;
 import gov.ce.fortaleza.lembrete.domain.ContractType;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -21,5 +22,9 @@ public interface ContractTypeService {
 
     ContractTypeDTO findByDescription(String description);
 
+    @Transactional
     ContractTypeDTO findById(long id);
+
+    @Transactional
+    ContractType getById(long id);
 }
