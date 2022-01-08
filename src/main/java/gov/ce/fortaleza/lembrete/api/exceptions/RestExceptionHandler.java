@@ -1,6 +1,9 @@
 package gov.ce.fortaleza.lembrete.api.exceptions;
 
 import gov.ce.fortaleza.lembrete.api.exceptions.models.ApiError;
+import gov.ce.fortaleza.lembrete.api.exceptions.models.ApiErrors;
+import gov.ce.fortaleza.lembrete.api.exceptions.models.ValidationError;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
@@ -25,6 +29,7 @@ import java.util.Map;
  * Date: 04/01/2022
  * Time: 22:41
  */
+@Slf4j
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -33,21 +38,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
-
-        Map<String, Object> errors = new HashMap<>();
+        log.info("Status code: " + status.value() + " description: " + status.getReasonPhrase());
+        Map<String, Object> validationErrors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String message = error.getDefaultMessage();
-            errors.put(fieldName, message);
+            validationErrors.put(fieldName, message);
         });
 
-
-        ApiError apiError = new ApiError(LocalDateTime.now(),
-                status, "Ocorreram erros de validação", errors,
+        ApiError apiError = new ValidationError(LocalDateTime.now(),
+                status, "Erro de validação", validationErrors,
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
 
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ApiErrors.builder()
+                .error(apiError).build(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -55,8 +60,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 
+
+    //TODO: verificar não funcional
     @ExceptionHandler(EntityNotFoundException.class)
-    public void entityNotFoundException(HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.BAD_REQUEST.value());
+    public ResponseEntity<Object> entityNotFoundException(HttpServletRequest request,
+                                                          HttpServletResponse response, Exception ex) {
+
+        ApiError apiError = new ApiError(LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST, "Erro de validação",
+                ((ServletWebRequest) request).getRequest().getRequestURI());
+
+        return new ResponseEntity(ApiErrors.builder().error(apiError).build(), HttpStatus.BAD_REQUEST);
     }
 }

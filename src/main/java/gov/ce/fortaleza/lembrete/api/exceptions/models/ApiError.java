@@ -1,11 +1,11 @@
 package gov.ce.fortaleza.lembrete.api.exceptions.models;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * Created by berkson
@@ -14,30 +14,21 @@ import java.util.Map;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ApiError {
-    private LocalDateTime dateTime;
-    private HttpStatus status;
+    private LocalDateTime timestamp;
+    private int status;
     private String message;
-    private Map<String, Object> details;
     private String path;
 
-    public ApiError(LocalDateTime dateTime, HttpStatus status, String message,
-                    Map<String, Object> details, String path) {
+    public ApiError(LocalDateTime timestamp, HttpStatus status, String message,
+                    String path) {
         super();
-        this.dateTime = dateTime;
-        this.status = status;
+        this.timestamp = timestamp;
+        this.status = status.value();
         this.message = message;
-        this.details = details;
         this.path = path;
     }
 
-//    public ApiError(LocalDateTime dateTime, HttpStatus status, String message,
-//                    String error, String path) {
-//        super();
-//        this.dateTime = dateTime;
-//        this.status = status;
-//        this.message = message;
-//        this.path = path;
-//        details = Arrays.asList(error);
-//    }
+
 }
