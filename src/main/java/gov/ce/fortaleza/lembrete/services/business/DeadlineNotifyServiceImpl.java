@@ -110,7 +110,7 @@ public class DeadlineNotifyServiceImpl implements NotifyService {
      * @param contract contrato
      */
     private void setCrons(Contract contract) {
-        LocalDate date = null;
+        LocalDate date = LocalDate.now();
         for (Alert alert : contract.getContractType().getAlerts()) {
             if (alert.getTimeCode().equals(TimeCode.D)) {
                 date = contract.getFinalDate().minusDays(alert.getTime());
