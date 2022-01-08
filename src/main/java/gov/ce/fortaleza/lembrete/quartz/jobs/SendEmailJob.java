@@ -1,5 +1,7 @@
 package gov.ce.fortaleza.lembrete.quartz.jobs;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.ce.fortaleza.lembrete.exceptions.SendMailException;
 import gov.ce.fortaleza.lembrete.models.Email;
 import gov.ce.fortaleza.lembrete.services.common.EmailService;
@@ -33,16 +35,23 @@ public class SendEmailJob extends QuartzJobBean {
     protected void executeInternal(@NonNull JobExecutionContext context)
             throws JobExecutionException {
 
+        log.info("Trabalho: " + context.getJobDetail().getKey().getName() +
+                " Iniciado: " + context.getFireTime());
+
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
 
-        Email email = (Email) jobDataMap.get("email");
-
         try {
+            Email email = new ObjectMapper().readValue(jobDataMap.get("email").toString(), Email.class);
             emailService.enviarMsgSimples(email);
         } catch (SendMailException e) {
             log.error("Erro de envio de email: " + e.getMessage());
             throw new JobExecutionException(e);
+        } catch (JsonProcessingException e) {
+            log.error("Erro ao recuperar Json da classe Email: " + e.getMessage());
+            throw new JobExecutionException(e);
         }
+
+        log.info("Próximo Trabalho Programado para: " + context.getNextFireTime());
     }
 
 }

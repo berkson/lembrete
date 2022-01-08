@@ -1,9 +1,7 @@
 package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
-import gov.ce.fortaleza.lembrete.services.common.CompanyService;
 import gov.ce.fortaleza.lembrete.services.common.ContractService;
-import gov.ce.fortaleza.lembrete.services.common.InterestedService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,30 +20,18 @@ public class ContractController {
 
     public static final String CONTRACT_API_ROOT = "/api/contract";
     private final ContractService contractService;
-    private final CompanyService companyService;
-    private final InterestedService interestedService;
 
-    public ContractController(ContractService contractService,
-                              CompanyService companyService, InterestedService interestedService) {
+    public ContractController(ContractService contractService) {
         this.contractService = contractService;
-        this.companyService = companyService;
-        this.interestedService = interestedService;
     }
 
     @PostMapping(value = "/new")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO newContract(@RequestBody ContractDTO contractDTO) {
 
-        companyService.findByCnpj(contractDTO.getCompany().getCnpj())
-                .ifPresentOrElse(contractDTO::setCompany,
-                        () -> contractDTO.setCompany(companyService.save(contractDTO.getCompany())));
+        ContractDTO contract = contractService.save(contractDTO);
 
-        contractDTO.getInterestedList().forEach(interestedDTO -> interestedService
-                .findByCpf(interestedDTO.getCpf())
-                .ifPresentOrElse(interested -> interestedDTO.setId(interested.getId()),
-                        () -> interestedDTO.setId(interestedService.save(interestedDTO).getId())));
-
-        return contractService.save(contractDTO);
+        return contract;
     }
 
     // TODO: criar o erro personalizado de não encontrado

@@ -6,6 +6,7 @@ import gov.ce.fortaleza.lembrete.domain.Company;
 import gov.ce.fortaleza.lembrete.repositories.CompanyRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
+    @Transactional
     public CompanyDTO save(CompanyDTO entity) {
         Company company = companyRepository
                 .save(companyMapper.companyDTOToCompany(entity));
@@ -52,10 +54,8 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Optional<CompanyDTO> findByCnpj(String cnpj) {
-        return Optional.ofNullable(
-                companyMapper.companyToCompanyDTO(
-                        companyRepository.findByCnpj(cnpj)
-                )
-        );
+        return companyRepository.findByCnpj(cnpj)
+                .map(companyMapper::companyToCompanyDTO);
+
     }
 }

@@ -1,9 +1,11 @@
 package gov.ce.fortaleza.lembrete.services.business;
 
-import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.ce.fortaleza.lembrete.domain.Alert;
 import gov.ce.fortaleza.lembrete.domain.Contract;
 import gov.ce.fortaleza.lembrete.domain.Interested;
+import gov.ce.fortaleza.lembrete.enums.ContractTypes;
 import gov.ce.fortaleza.lembrete.enums.EmailPriority;
 import gov.ce.fortaleza.lembrete.enums.TimeCode;
 import gov.ce.fortaleza.lembrete.models.ContractMessage;
@@ -11,7 +13,6 @@ import gov.ce.fortaleza.lembrete.models.Email;
 import gov.ce.fortaleza.lembrete.models.Message;
 import gov.ce.fortaleza.lembrete.models.ScheduleDataModel;
 import gov.ce.fortaleza.lembrete.quartz.jobs.SendEmailJob;
-import gov.ce.fortaleza.lembrete.services.common.ContractService;
 import gov.ce.fortaleza.lembrete.services.common.ScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.CaseUtils;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -40,19 +42,52 @@ public class DeadlineNotifyServiceImpl implements NotifyService {
     public static final String DEADLINE_GROUP = "Contract Notification";
     private final ScheduleService scheduleService;
     private final Scheduler scheduler;
-    private final ContractService contractService;
 
-    public DeadlineNotifyServiceImpl(ScheduleService scheduleService, Scheduler scheduler,
-                                     ContractService contractService) {
+    public DeadlineNotifyServiceImpl(ScheduleService scheduleService, Scheduler scheduler) {
         this.scheduleService = scheduleService;
         this.scheduler = scheduler;
-        this.contractService = contractService;
     }
 
     @Override
-    public void verifyAndSchedule(ContractDTO contractDTO) {
-        Contract contract = contractService.getById(contractDTO.getId());
+    public void verifyAndSchedule(Object o) {
+        Contract contract = (Contract) o;
+
+        if (contract.getContractType().getCode()
+                .equals(ContractTypes.SERVICO_CONTINUADO.getCode()))
+            removeAlertBasedOnAdditivePossibility(contract);
+
         setCrons(contract);
+        scheduleJob(contract);
+    }
+
+    /**
+     * Remove o alerta conforme o tempo que o contrato está ativo
+     *
+     * @param contract contrato
+     */
+    public void removeAlertBasedOnAdditivePossibility(Contract contract) {
+        long monthsPassed = ChronoUnit.MONTHS
+                .between(contract.getInitialDate(), contract.getFinalDate());
+        // Contrato que não atingiu o limite de 60 meses
+        if (monthsPassed < ContractTypes.SERVICO_CONTINUADO.getValidity()) {
+            contract.getContractType()
+                    .getAlerts()
+                    .removeIf(alert -> alert.getTime() == 6
+                            && alert.getTimeCode().equals(TimeCode.M));
+        } else {
+            contract.getContractType()
+                    .getAlerts()
+                    .removeIf(alert -> alert.getTime() == 2
+                            && alert.getTimeCode().equals(TimeCode.M));
+        }
+    }
+
+    /**
+     * Método que chama o scheduler e agenda o trabalho para cada alerta..
+     *
+     * @param contract contrato
+     */
+    private void scheduleJob(Contract contract) {
         List<ScheduleDataModel> models = contract.getContractType()
                 .getAlerts().stream().map(alert -> setScheduleModel(contract, alert))
                 .collect(Collectors.toList());
@@ -63,11 +98,17 @@ public class DeadlineNotifyServiceImpl implements NotifyService {
                                 scheduleService.createCronTrigger(model));
                 log.info("Job " + model.getJobName() + " agendado");
             } catch (SchedulerException e) {
-                log.error("Erro ao criar job: " + model.getJobName() + e.getMessage());
+                log.error("Erro ao criar job: " + model.getJobName() + " " + e.getMessage());
             }
         });
     }
 
+    /**
+     * Método que cria as crons de agendamento e as atribui ao
+     * respectivo alerta
+     *
+     * @param contract contrato
+     */
     private void setCrons(Contract contract) {
         LocalDate date = null;
         for (Alert alert : contract.getContractType().getAlerts()) {
@@ -86,6 +127,14 @@ public class DeadlineNotifyServiceImpl implements NotifyService {
         }
     }
 
+    /**
+     * Método que gera os modelos para criação do JobDetail e do Trigger
+     * de cada alerta.
+     *
+     * @param contract contrato
+     * @param alert    o alerta para o qual se deseja o modelo
+     * @return ScheduleDataModel modelo de agendamento
+     */
     private ScheduleDataModel setScheduleModel(Contract contract, Alert alert) {
         String name = contract.getContractNumber() + "_" + alert.getTime() + alert.getTimeCode();
         ScheduleDataModel model = new ScheduleDataModel();
@@ -103,6 +152,13 @@ public class DeadlineNotifyServiceImpl implements NotifyService {
         return model;
     }
 
+    /**
+     * Cria o email a ser enviado e o inclui no mapa
+     * do agendamento.
+     *
+     * @param contract contrato
+     * @return JobDataMap mapa com os dados do agendamento
+     */
     private JobDataMap createDataMap(Contract contract) {
         Email email = new Email();
 
@@ -120,7 +176,12 @@ public class DeadlineNotifyServiceImpl implements NotifyService {
         email.setPriority(EmailPriority.NORMAL);
 
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put("email", email);
+        try {
+            jobDataMap.put("email", new ObjectMapper().writeValueAsString(email));
+            log.info("Json de Email criada com sucesso: " + jobDataMap.get("email"));
+        } catch (JsonProcessingException e) {
+            log.error("Erro na conversão do objeto Email: " + e.getMessage());
+        }
 
         return jobDataMap;
     }

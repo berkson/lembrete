@@ -1,12 +1,15 @@
 package gov.ce.fortaleza.lembrete.services.business;
 
-import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
-
 /**
  * Created by berkson
  * Date: 06/01/2022
  * Time: 21:05
  */
 public interface NotifyService {
-    void verifyAndSchedule(ContractDTO contract);
+    /**
+     * Verifica e realiza o agendamento do(s) Trabalho(s).
+     *
+     * @param object objeto a ser verificado
+     */
+    void verifyAndSchedule(Object object);
 }

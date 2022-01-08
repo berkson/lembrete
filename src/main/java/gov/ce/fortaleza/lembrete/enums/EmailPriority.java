@@ -1,6 +1,8 @@
 package gov.ce.fortaleza.lembrete.enums;
 
-public enum EmailPriority {
+import java.io.Serializable;
+
+public enum EmailPriority implements Serializable {
 	HIGH("1"),
 	NORMAL("3"),
 	LOW("5");

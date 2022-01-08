@@ -155,7 +155,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setTo(email.getTo());
             helper.setFrom(FROM);
             helper.setSubject(email.getSubject());
-            helper.setText(email.getMessage().getText(), true);
+            helper.setText(email.getMessage().generateText(), true);
             msg.setHeader(PR, email.getPriority().toString());
         } catch (MessagingException e) {
             throw new SendMailException(ERR_MIME);
