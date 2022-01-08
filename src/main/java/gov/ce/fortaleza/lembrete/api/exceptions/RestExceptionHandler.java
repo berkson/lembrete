@@ -10,16 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +31,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    //TODO: Verificar o error handling completamente
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers,
@@ -56,20 +53,28 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public void constraintViolationException(HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.BAD_REQUEST.value());
-    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors constraintViolationException(ConstraintViolationException ex, WebRequest request) {
 
-
-    //TODO: verificar não funcional
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> entityNotFoundException(HttpServletRequest request,
-                                                          HttpServletResponse response, Exception ex) {
+        String message = ex.getMessage().substring(ex.getMessage().indexOf(" ") + 1);
 
         ApiError apiError = new ApiError(LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST, "Erro de validação",
+                HttpStatus.BAD_REQUEST, message,
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
-        return new ResponseEntity(ApiErrors.builder().error(apiError).build(), HttpStatus.BAD_REQUEST);
+        return ApiErrors.builder().error(apiError).build();
     }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> entityNotFoundException(EntityNotFoundException ex,
+                                                          WebRequest request) {
+        ApiError apiError = new ApiError(LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST, "Não encontrado",
+                ((ServletWebRequest) request).getRequest().getRequestURI());
+
+        return new ResponseEntity(ApiErrors.builder()
+                .error(apiError).build(), HttpStatus.BAD_REQUEST);
+    }
+
+
 }
