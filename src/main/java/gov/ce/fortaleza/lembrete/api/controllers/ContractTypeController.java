@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static gov.ce.fortaleza.lembrete.api.controllers.ContractTypeController.CONTRACT_TYPE_API;
 
 
@@ -31,5 +33,11 @@ public class ContractTypeController {
     @ResponseStatus(HttpStatus.OK)
     public ContractTypeDTO getContractType(@PathVariable Long id) {
         return contractTypeService.findById(id);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ContractTypeDTO> getTypes() {
+        return contractTypeService.findAll();
     }
 }

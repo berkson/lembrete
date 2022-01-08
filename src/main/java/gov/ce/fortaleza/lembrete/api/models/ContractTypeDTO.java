@@ -20,7 +20,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ContractTypeDTO extends BaseClass implements Serializable {
     private static final long serialVersionUID = 5752264780352184301L;
-    @Length(min = 5, max = 255)
+    @Length(min = 2, max = 10)
     private String code;
     private String description;
     private Integer maxValidity;
