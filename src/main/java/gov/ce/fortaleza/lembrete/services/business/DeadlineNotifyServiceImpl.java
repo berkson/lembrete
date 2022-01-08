@@ -165,7 +165,7 @@ public class DeadlineNotifyServiceImpl implements NotifyService {
         Map<String, String> data = new HashMap<>();
         data.put("contractNumber", contract.getContractNumber());
         data.put("finalDate", contract.getFinalDate().toString());
-        Message message = new ContractMessage(data);
+        Message message = new ContractMessage(data, "contract_message");
 
         List<String> to = contract.getInterestedList().stream()
                 .map(Interested::getEmail).collect(Collectors.toList());

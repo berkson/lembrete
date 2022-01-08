@@ -21,15 +21,9 @@ import java.util.Map;
 public class ContractMessage implements Message, Serializable {
 
     private Map<String, String> data;
+    private String type;
 
 
-    /**
-     * Retorna mensagem de alerta de expiração do contrato.
-     * Antes do uso deve ser setado um Objeto MAP com
-     * as chaves contractNumber e finalDate no construtor da classe
-     *
-     * @return String
-     */
     @Override
     public String generateText() {
         return String.format(getString(),
