@@ -4,9 +4,11 @@ import gov.ce.fortaleza.lembrete.api.exceptions.models.ApiError;
 import gov.ce.fortaleza.lembrete.api.exceptions.models.ApiErrors;
 import gov.ce.fortaleza.lembrete.api.exceptions.models.ValidationError;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,6 +25,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,6 +38,12 @@ import java.util.Optional;
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private final MessageSource messageSource;
+
+    public RestExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers,
@@ -46,8 +55,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             validationErrors.put(fieldName, message);
         });
 
+        String message = messageSource.getMessage("error.validation",
+                null, Locale.getDefault());
+
         ApiError apiError = new ValidationError(LocalDateTime.now(),
-                status, "Erro de validação", validationErrors,
+                status, message, validationErrors,
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
 
@@ -114,4 +126,37 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .error(apiError).build(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex,
+                                                        WebRequest request) {
+        ApiError apiError = new ApiError(LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST, ex.getMessage(),
+                ((ServletWebRequest) request).getRequest().getRequestURI());
+
+        return new ResponseEntity<>(ApiErrors.builder()
+                .error(apiError).build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
+        ApiError apiError = new ApiError(LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST, messageSource
+                .getMessage("error.conversion", null, Locale.getDefault()),
+                ((ServletWebRequest) request).getRequest().getRequestURI());
+
+        return new ResponseEntity<>(ApiErrors.builder()
+                .error(apiError).build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
+        ApiError apiError = new ApiError(LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(),
+                ((ServletWebRequest) request).getRequest().getRequestURI());
+        return new ResponseEntity<Object>(
+                apiError, new HttpHeaders(), apiError.getStatus());
+    }
 }

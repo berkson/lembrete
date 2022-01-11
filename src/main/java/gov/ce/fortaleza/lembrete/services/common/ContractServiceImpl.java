@@ -1,6 +1,7 @@
 package gov.ce.fortaleza.lembrete.services.common;
 
 import gov.ce.fortaleza.lembrete.api.mappers.ContractMapper;
+import gov.ce.fortaleza.lembrete.api.models.AdditiveDTO;
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
 import gov.ce.fortaleza.lembrete.domain.Contract;
 import gov.ce.fortaleza.lembrete.repositories.CompanyRepository;
@@ -69,12 +70,7 @@ public class ContractServiceImpl implements ContractService {
                     .getById(contract.getContractType().getId()));
         }
 
-        Contract savedContract = contractRepository.save(contract);
-
-        notifyService.verifyAndSchedule(savedContract);
-
-
-        return contractMapper.contractToContractDTO(savedContract);
+        return this.saveOrUpdateAndSchedule(contract);
     }
 
     @Override
@@ -98,4 +94,26 @@ public class ContractServiceImpl implements ContractService {
     public Contract getById(long id) {
         return contractRepository.getById(id);
     }
+
+    @Override
+    @Transactional
+    public ContractDTO add(AdditiveDTO additiveDTO) {
+
+        Contract contract = contractRepository.getById(additiveDTO.getContract().getId());
+
+        contract.setFinalDate(contract
+                .getFinalDate()
+                .plusMonths(additiveDTO.getDeadline()));
+
+        return this.saveOrUpdateAndSchedule(contract);
+    }
+
+    private ContractDTO saveOrUpdateAndSchedule(Contract contract) {
+        Contract savedContract = contractRepository.save(contract);
+
+        notifyService.verifyAndSchedule(savedContract);
+
+        return contractMapper.contractToContractDTO(savedContract);
+    }
+
 }
