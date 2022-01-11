@@ -7,13 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,8 +29,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ContractDTO extends BaseClass implements Serializable {
     private static final long serialVersionUID = -7864511284395161859L;
-    @Length(min = 6, max = 255)
     @JsonProperty(value = "contract_number")
+    @Pattern(regexp = "^([\\d])+/([2][\\d]{3})$", message = "{field.contractNumber.Pattern.message}")
     private String contractNumber;
     @NotNull
     @Valid
