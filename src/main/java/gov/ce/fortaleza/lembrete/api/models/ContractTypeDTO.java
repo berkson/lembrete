@@ -2,7 +2,6 @@ package gov.ce.fortaleza.lembrete.api.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ce.fortaleza.lembrete.domain.BaseClass;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ContractTypeDTO extends BaseClass implements Serializable {
     private static final long serialVersionUID = 5752264780352184301L;
     @Length(min = 2, max = 10)
@@ -26,4 +24,12 @@ public class ContractTypeDTO extends BaseClass implements Serializable {
     private String description;
     @JsonProperty(value = "max_validity")
     private Integer maxValidity;
+
+    public ContractTypeDTO(Long id, String code, String description, Integer maxValidity) {
+        super(id);
+        this.code = code;
+        this.description = description;
+        this.maxValidity = maxValidity;
+    }
+
 }

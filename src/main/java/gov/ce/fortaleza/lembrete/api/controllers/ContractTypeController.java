@@ -1,12 +1,14 @@
 package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.api.models.ContractTypeDTO;
+import gov.ce.fortaleza.lembrete.api.models.ContractTypesDTO;
 import gov.ce.fortaleza.lembrete.services.common.ContractTypeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.constraints.Min;
 
 import static gov.ce.fortaleza.lembrete.api.controllers.ContractTypeController.CONTRACT_TYPE_API;
 
@@ -31,13 +33,13 @@ public class ContractTypeController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ContractTypeDTO getContractType(@PathVariable Long id) {
+    public ContractTypeDTO getContractType(@PathVariable @Min(1) Long id) {
         return contractTypeService.findById(id);
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<ContractTypeDTO> getTypes() {
-        return contractTypeService.findAll();
+    public ContractTypesDTO getTypes() {
+        return new ContractTypesDTO(contractTypeService.findAll());
     }
 }

@@ -38,7 +38,7 @@ public class Bootstrap implements CommandLineRunner {
     private void createContractTypes(List<Alert> alerts) {
         List<ContractType> contractTypes = Arrays
                 .asList(ContractType.builder()
-                                .description(ContractTypes.AQUISICAO_BENS.getType())
+                                .description(ContractTypes.AQUISICAO_BENS.getDescription())
                                 .maxValidity(ContractTypes.AQUISICAO_BENS.getValidity())
                                 .code(ContractTypes.AQUISICAO_BENS.getCode())
                                 .alerts(Arrays.asList(
@@ -46,7 +46,7 @@ public class Bootstrap implements CommandLineRunner {
                                 ))
                                 .build(),
                         ContractType.builder()
-                                .description(ContractTypes.SERVICO_CONTINUADO.getType())
+                                .description(ContractTypes.SERVICO_CONTINUADO.getDescription())
                                 .maxValidity(ContractTypes.SERVICO_CONTINUADO.getValidity())
                                 .code(ContractTypes.SERVICO_CONTINUADO.getCode())
                                 .alerts(Arrays.asList(
@@ -54,7 +54,7 @@ public class Bootstrap implements CommandLineRunner {
                                 ))
                                 .build(),
                         ContractType.builder()
-                                .description(ContractTypes.EXCEPCIONAL.getType())
+                                .description(ContractTypes.EXCEPCIONAL.getDescription())
                                 .maxValidity(ContractTypes.EXCEPCIONAL.getValidity())
                                 .code(ContractTypes.EXCEPCIONAL.getCode())
                                 .alerts(Arrays.asList(
@@ -62,7 +62,7 @@ public class Bootstrap implements CommandLineRunner {
                                 ))
                                 .build(),
                         ContractType.builder()
-                                .description(ContractTypes.EMERGENCIAL.getType())
+                                .description(ContractTypes.EMERGENCIAL.getDescription())
                                 .maxValidity(ContractTypes.EMERGENCIAL.getValidity())
                                 .code(ContractTypes.EMERGENCIAL.getCode())
                                 .alerts(Arrays.asList(
@@ -70,7 +70,7 @@ public class Bootstrap implements CommandLineRunner {
                                 ))
                                 .build(),
                         ContractType.builder()
-                                .description(ContractTypes.CONVENIO.getType())
+                                .description(ContractTypes.CONVENIO.getDescription())
                                 .maxValidity(ContractTypes.CONVENIO.getValidity())
                                 .code(ContractTypes.CONVENIO.getCode())
                                 .alerts(Arrays.asList(
@@ -78,7 +78,7 @@ public class Bootstrap implements CommandLineRunner {
                                 ))
                                 .build(),
                         ContractType.builder()
-                                .description(ContractTypes.COOP.getType())
+                                .description(ContractTypes.COOP.getDescription())
                                 .maxValidity(ContractTypes.COOP.getValidity())
                                 .code(ContractTypes.COOP.getCode())
                                 .alerts(Arrays.asList(
@@ -86,7 +86,7 @@ public class Bootstrap implements CommandLineRunner {
                                 ))
                                 .build(),
                         ContractType.builder()
-                                .description(ContractTypes.CREDENCIA.getType())
+                                .description(ContractTypes.CREDENCIA.getDescription())
                                 .maxValidity(ContractTypes.CREDENCIA.getValidity())
                                 .code(ContractTypes.CREDENCIA.getCode())
                                 .alerts(Arrays.asList(

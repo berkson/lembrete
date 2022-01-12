@@ -14,18 +14,18 @@ public enum ContractTypes {
     COOP("acordo de cooperação", 60, "COO"),
     CREDENCIA("termos de credenciamento", 60, "CRE");
 
-    private final String type;
+    private final String description;
     private final int validity;
     private final String code;
 
-    ContractTypes(String type, int validity, String code) {
-        this.type = type;
+    ContractTypes(String description, int validity, String code) {
+        this.description = description;
         this.validity = validity;
         this.code = code;
     }
 
-    public String getType() {
-        return this.type;
+    public String getDescription() {
+        return this.description;
     }
 
     public int getValidity() {
