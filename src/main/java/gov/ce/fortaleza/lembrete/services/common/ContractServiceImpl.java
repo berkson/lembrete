@@ -99,7 +99,7 @@ public class ContractServiceImpl implements ContractService {
     @Transactional
     public ContractDTO add(AdditiveDTO additiveDTO) {
 
-        Contract contract = contractRepository.getById(additiveDTO.getContract().getId());
+        Contract contract = contractRepository.getById(additiveDTO.getContractId());
 
         contract.setFinalDate(contract
                 .getFinalDate()

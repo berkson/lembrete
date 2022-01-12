@@ -2,7 +2,6 @@ package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.api.models.AdditiveDTO;
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
-import gov.ce.fortaleza.lembrete.enums.ContractTypes;
 import gov.ce.fortaleza.lembrete.services.common.ContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Locale;
 
 import static gov.ce.fortaleza.lembrete.api.controllers.ContractController.CONTRACT_API_ROOT;
 
@@ -55,13 +53,6 @@ public class ContractController {
 
     @PostMapping("/add")
     public ContractDTO add(@Valid @RequestBody AdditiveDTO additiveDTO) {
-        if (additiveDTO.getContract().getContractType().getCode()
-                .equals(ContractTypes.SERVICO_CONTINUADO.getCode()))
-            return contractService.add(additiveDTO);
-        else
-            throw new IllegalArgumentException(messageSource.getMessage(
-                    "error.additive.type", null, Locale.getDefault()
-            ));
-
+        return contractService.add(additiveDTO);
     }
 }

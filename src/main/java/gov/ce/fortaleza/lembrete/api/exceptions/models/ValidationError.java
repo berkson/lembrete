@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by berkson
@@ -18,10 +18,10 @@ import java.util.Map;
 @NoArgsConstructor
 public class ValidationError extends ApiError {
 
-    private Map<String, Object> details;
+    private List<String> details;
 
     public ValidationError(LocalDateTime dateTime, HttpStatus status,
-                           String message, Map<String, Object> details, String path) {
+                           String message, List<String> details, String path) {
         super(dateTime, status, message, path);
         this.details = details;
     }

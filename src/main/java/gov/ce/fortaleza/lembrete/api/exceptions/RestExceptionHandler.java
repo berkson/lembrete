@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,9 +25,9 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -48,12 +49,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
-        Map<String, Object> validationErrors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            validationErrors.put(fieldName, message);
-        });
+
+        List<String> validationErrors = new ArrayList<>();
+
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            validationErrors.add(error.getField() + ": " + error.getDefaultMessage());
+        }
+
+        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+            validationErrors.add(error.getObjectName() + ": " + error.getDefaultMessage());
+        }
 
         String message = messageSource.getMessage("error.validation",
                 null, Locale.getDefault());
@@ -100,17 +105,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
-        Map<String, Object> map = new HashMap<>();
+        List<String> list = new ArrayList<>();
         int count = 1;
 
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            String value = "Valor " + violation.getInvalidValue() + " " + violation.getMessage();
-            map.put("restriction_" + count, value);
+            String restriction = "Valor " + violation.getInvalidValue() + " " + violation.getMessage();
+            list.add(restriction);
             count++;
         }
 
         ApiError apiError = new ValidationError(LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST, "Erro(s) de restrição", map,
+                HttpStatus.BAD_REQUEST, "Erro(s) de restrição", list,
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
         return ApiErrors.builder().error(apiError).build();

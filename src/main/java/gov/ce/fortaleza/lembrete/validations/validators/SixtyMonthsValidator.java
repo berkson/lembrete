@@ -1,9 +1,13 @@
 package gov.ce.fortaleza.lembrete.validations.validators;
 
 import gov.ce.fortaleza.lembrete.api.models.AdditiveDTO;
+import gov.ce.fortaleza.lembrete.domain.Contract;
+import gov.ce.fortaleza.lembrete.services.common.ContractService;
 import gov.ce.fortaleza.lembrete.validations.annotations.SixtyMonthsVerification;
 import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
@@ -16,29 +20,39 @@ import java.time.temporal.ChronoUnit;
  */
 public class SixtyMonthsValidator implements ConstraintValidator<SixtyMonthsVerification, AdditiveDTO> {
 
+    private ContractService contractService;
+
+    @Autowired
+    public void setContract(ContractService contractService) {
+        this.contractService = contractService;
+    }
+
     @Override
     public void initialize(SixtyMonthsVerification constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
-    public boolean isValid(AdditiveDTO value, ConstraintValidatorContext context) {
+    @Transactional
+    public boolean isValid(AdditiveDTO additive, ConstraintValidatorContext context) {
 
-        LocalDate initialDate = value.getContract().getInitialDate();
-        LocalDate finalDate = value.getContract().getFinalDate();
+        Contract contract = contractService.getById(additive.getContractId());
+
+        LocalDate initialDate = contract.getInitialDate();
+        LocalDate finalDate = contract.getFinalDate();
 
         long timePassed = ChronoUnit.MONTHS
                 .between(initialDate, finalDate);
 
 
-        long total = timePassed + value.getDeadline();
+        long total = timePassed + additive.getDeadline();
 
 
-        if (total > value.getContract().getContractType().getMaxValidity()) {
+        if (total > contract.getContractType().getMaxValidity()) {
+            long remain = contract.getContractType().getMaxValidity() - timePassed;
             if (context instanceof HibernateConstraintValidatorContext) {
                 context.unwrap(HibernateConstraintValidatorContext.class)
-                        .addMessageParameter("0", value.getContract().getContractType()
-                                .getMaxValidity() - timePassed);
+                        .addMessageParameter("0", remain < 0 ? 0 : remain);
             }
 
             return false;
