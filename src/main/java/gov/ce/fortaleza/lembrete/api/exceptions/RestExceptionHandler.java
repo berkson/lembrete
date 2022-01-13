@@ -9,10 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,7 +26,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -46,9 +47,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
+    @NonNull
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+            MethodArgumentNotValidException ex, @NonNull HttpHeaders headers,
+            @NonNull HttpStatus status, @NonNull WebRequest request) {
 
         List<String> validationErrors = new ArrayList<>();
 
@@ -63,7 +65,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         String message = messageSource.getMessage("error.validation",
                 null, Locale.getDefault());
 
-        ApiError apiError = new ValidationError(LocalDateTime.now(),
+        ApiError apiError = new ValidationError(
                 status, message, validationErrors,
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
@@ -73,14 +75,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
+    @NonNull
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+            @NonNull HttpRequestMethodNotSupportedException ex,
+            @NonNull HttpHeaders headers, @NonNull HttpStatus status,
+            @NonNull WebRequest request) {
 
         String method = Optional.ofNullable(((ServletWebRequest) request).getHttpMethod())
                 .map(Enum::name).orElse("");
 
-        ApiError apiError = new ApiError(LocalDateTime.now(),
+        ApiError apiError = new ApiError(
                 status, "Método de requisição " + method + " não suportado",
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
@@ -89,11 +93,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
+    @NonNull
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
-                                                                   HttpHeaders headers,
-                                                                   HttpStatus status,
-                                                                   WebRequest request) {
-        ApiError apiError = new ApiError(LocalDateTime.now(),
+                                                                   @NonNull HttpHeaders headers,
+                                                                   @NonNull HttpStatus status,
+                                                                   @NonNull WebRequest request) {
+        ApiError apiError = new ApiError(
                 status, "Nenhum serviço encontrado para requisição '" +
                 ex.getHttpMethod() + "' na url", ex.getRequestURL());
 
@@ -106,15 +111,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
         List<String> list = new ArrayList<>();
-        int count = 1;
 
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
             String restriction = "Valor " + violation.getInvalidValue() + " " + violation.getMessage();
             list.add(restriction);
-            count++;
         }
 
-        ApiError apiError = new ValidationError(LocalDateTime.now(),
+        ApiError apiError = new ValidationError(
                 HttpStatus.BAD_REQUEST, "Erro(s) de restrição", list,
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
@@ -123,7 +126,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFound(WebRequest request) {
-        ApiError apiError = new ApiError(LocalDateTime.now(),
+        ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST, "Não encontrado",
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
@@ -134,7 +137,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex,
                                                         WebRequest request) {
-        ApiError apiError = new ApiError(LocalDateTime.now(),
+        ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST, ex.getMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
@@ -143,11 +146,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
-                                                                  HttpHeaders headers,
-                                                                  HttpStatus status,
-                                                                  WebRequest request) {
-        ApiError apiError = new ApiError(LocalDateTime.now(),
+    @NonNull
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            @NonNull HttpMessageNotReadableException ex, @NonNull HttpHeaders headers,
+            @NonNull HttpStatus status, @NonNull WebRequest request) {
+        ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST, messageSource
                 .getMessage("error.conversion", null, Locale.getDefault()),
                 ((ServletWebRequest) request).getRequest().getRequestURI());
@@ -156,12 +159,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .error(apiError).build(), HttpStatus.BAD_REQUEST);
     }
 
+    @Override
+    @NonNull
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException ex,
+            @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, messageSource
+                .getMessage("error.missing.parameter",
+                        List.of(ex.getParameterName()).toArray(), Locale.getDefault()),
+                ((ServletWebRequest) request).getRequest().getRequestURI());
+        return new ResponseEntity<>(ApiErrors.builder()
+                .error(apiError).build(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
-        ApiError apiError = new ApiError(LocalDateTime.now(),
+        ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI());
-        return new ResponseEntity<Object>(
+        return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 }

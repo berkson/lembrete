@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.persistence.EntityNotFoundException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -86,8 +85,7 @@ class ContractTypeControllerTest {
     @Test
     void getContractTypeNotFound() throws Exception {
         //given
-        ApiError apiError = new ApiError(LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST, "Não encontrado",
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Não encontrado",
                 ContractTypeController.CONTRACT_TYPE_API + "/1");
         when(contractTypeService.findById(anyLong())).thenThrow(new EntityNotFoundException());
 
