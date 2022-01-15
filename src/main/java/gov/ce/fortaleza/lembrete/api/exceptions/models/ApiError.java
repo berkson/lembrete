@@ -18,6 +18,11 @@ public class ApiError {
     private String message;
     private String path;
 
+    /**
+     * @param status  Http Status
+     * @param message Mensagem de erro
+     * @param path    Caminho solicitado na api
+     */
     public ApiError(HttpStatus status, String message,
                     String path) {
         super();

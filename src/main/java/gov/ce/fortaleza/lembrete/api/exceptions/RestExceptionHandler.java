@@ -5,11 +5,14 @@ import gov.ce.fortaleza.lembrete.api.exceptions.models.ApiErrors;
 import gov.ce.fortaleza.lembrete.api.exceptions.models.ValidationError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -28,7 +31,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -63,7 +65,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         String message = messageSource.getMessage("error.validation",
-                null, Locale.getDefault());
+                null, LocaleContextHolder.getLocale());
 
         ApiError apiError = new ValidationError(
                 status, message, validationErrors,
@@ -127,7 +129,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFound(WebRequest request) {
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST, "Não encontrado",
+                HttpStatus.BAD_REQUEST, messageSource.getMessage("error.not.found",
+                null, LocaleContextHolder.getLocale()),
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
         return new ResponseEntity<>(ApiErrors.builder()
@@ -152,7 +155,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             @NonNull HttpStatus status, @NonNull WebRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST, messageSource
-                .getMessage("error.conversion", null, Locale.getDefault()),
+                .getMessage("error.conversion", null, LocaleContextHolder.getLocale()),
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
         return new ResponseEntity<>(ApiErrors.builder()
@@ -164,12 +167,32 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
             MissingServletRequestParameterException ex,
             @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, messageSource
                 .getMessage("error.missing.parameter",
-                        List.of(ex.getParameterName()).toArray(), Locale.getDefault()),
+                        List.of(ex.getParameterName()).toArray(),
+                        request.getLocale()),
                 ((ServletWebRequest) request).getRequest().getRequestURI());
         return new ResponseEntity<>(ApiErrors.builder()
                 .error(apiError).build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<Object> handleAuthentication(AuthenticationException ex, WebRequest request) {
+
+        String message = ex.getLocalizedMessage();
+        log.info("Locale request: " + request.getHeader("Accept-Language"));
+
+        if (ex instanceof InsufficientAuthenticationException) {
+            message = messageSource.getMessage("InsufficientAuthenticationException.fullAuth",
+                    null, LocaleContextHolder.getLocale());
+        }
+
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED,
+                message,
+                ((ServletWebRequest) request).getRequest().getRequestURI());
+        return new ResponseEntity<>(ApiErrors.builder().error(apiError)
+                .build(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({Exception.class})
@@ -180,4 +203,5 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
+
 }

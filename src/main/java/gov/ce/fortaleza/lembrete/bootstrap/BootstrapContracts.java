@@ -18,12 +18,12 @@ import java.util.List;
  * Time: 20:42
  */
 @Component
-public class Bootstrap implements CommandLineRunner {
+public class BootstrapContracts implements CommandLineRunner {
 
     private final ContractTypeService contractTypeService;
     private final AlertService alertService;
 
-    public Bootstrap(ContractTypeService contractTypeService, AlertService alertService) {
+    public BootstrapContracts(ContractTypeService contractTypeService, AlertService alertService) {
         this.contractTypeService = contractTypeService;
         this.alertService = alertService;
     }
