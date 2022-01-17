@@ -4,6 +4,7 @@ import gov.ce.fortaleza.lembrete.api.mappers.ContractMapper;
 import gov.ce.fortaleza.lembrete.api.models.AdditiveDTO;
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
 import gov.ce.fortaleza.lembrete.domain.Contract;
+import gov.ce.fortaleza.lembrete.domain.Interested;
 import gov.ce.fortaleza.lembrete.repositories.CompanyRepository;
 import gov.ce.fortaleza.lembrete.repositories.ContractRepository;
 import gov.ce.fortaleza.lembrete.repositories.ContractTypeRepository;
@@ -31,7 +32,6 @@ public class ContractServiceImpl implements ContractService {
     private final ContractMapper contractMapper;
     private final CompanyRepository companyRepository;
     private final InterestedRepository interestedRepository;
-    @Qualifier("deadlineNotifyServiceImpl")
     private final NotifyService notifyService;
     private final ContractTypeRepository contractTypeRepository;
 
@@ -39,7 +39,7 @@ public class ContractServiceImpl implements ContractService {
                                ContractMapper contractMapper,
                                CompanyRepository companyRepository,
                                InterestedRepository interestedRepository,
-                               NotifyService notifyService,
+                               @Qualifier("deadlineNotifyServiceImpl") NotifyService notifyService,
                                ContractTypeRepository contractTypeRepository) {
         this.contractRepository = contractRepository;
         this.contractMapper = contractMapper;
@@ -63,7 +63,11 @@ public class ContractServiceImpl implements ContractService {
         contract.getInterestedList().forEach(interested -> interestedRepository
                 .findByCpf(interested.getCpf())
                 .ifPresentOrElse(encontrado -> interested.setId(encontrado.getId()),
-                        () -> interested.setId(interestedRepository.save(interested).getId())));
+                        () -> {
+                            interested.getPhones().forEach(phone -> phone.setInterested(interested));
+                            Interested savedInterested = interestedRepository.save(interested);
+                            interested.setId(savedInterested.getId());
+                        }));
 
         if (contract.getContractType().getCode() == null) {
             contract.setContractType(contractTypeRepository

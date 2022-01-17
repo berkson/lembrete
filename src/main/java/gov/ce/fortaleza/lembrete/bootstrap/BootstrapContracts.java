@@ -32,7 +32,10 @@ public class BootstrapContracts implements CommandLineRunner {
     public void run(String... args) {
         List<Alert> alerts = null;
         if (this.alertService.count() == 0) alerts = this.createAlertTypes();
-        if (this.contractTypeService.count() == 0) this.createContractTypes(alerts);
+        if (this.contractTypeService.count() == 0) {
+            assert alerts != null;
+            this.createContractTypes(alerts);
+        }
     }
 
     private void createContractTypes(List<Alert> alerts) {
@@ -65,7 +68,7 @@ public class BootstrapContracts implements CommandLineRunner {
                                 .description(ContractTypes.EMERGENCIAL.getDescription())
                                 .maxValidity(ContractTypes.EMERGENCIAL.getValidity())
                                 .code(ContractTypes.EMERGENCIAL.getCode())
-                                .alerts(Arrays.asList(
+                                .alerts(List.of(
                                         alerts.get(1)
                                 ))
                                 .build(),
@@ -73,7 +76,7 @@ public class BootstrapContracts implements CommandLineRunner {
                                 .description(ContractTypes.CONVENIO.getDescription())
                                 .maxValidity(ContractTypes.CONVENIO.getValidity())
                                 .code(ContractTypes.CONVENIO.getCode())
-                                .alerts(Arrays.asList(
+                                .alerts(List.of(
                                         alerts.get(2)
                                 ))
                                 .build(),
@@ -81,7 +84,7 @@ public class BootstrapContracts implements CommandLineRunner {
                                 .description(ContractTypes.COOP.getDescription())
                                 .maxValidity(ContractTypes.COOP.getValidity())
                                 .code(ContractTypes.COOP.getCode())
-                                .alerts(Arrays.asList(
+                                .alerts(List.of(
                                         alerts.get(2)
                                 ))
                                 .build(),
@@ -89,7 +92,7 @@ public class BootstrapContracts implements CommandLineRunner {
                                 .description(ContractTypes.CREDENCIA.getDescription())
                                 .maxValidity(ContractTypes.CREDENCIA.getValidity())
                                 .code(ContractTypes.CREDENCIA.getCode())
-                                .alerts(Arrays.asList(
+                                .alerts(List.of(
                                         alerts.get(2)
                                 ))
                                 .build());

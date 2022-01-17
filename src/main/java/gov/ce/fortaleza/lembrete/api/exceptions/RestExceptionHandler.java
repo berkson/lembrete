@@ -87,7 +87,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(Enum::name).orElse("");
 
         ApiError apiError = new ApiError(
-                status, "Método de requisição " + method + " não suportado",
+                status, messageSource.getMessage("error.request.method",
+                List.of(method).toArray(), LocaleContextHolder.getLocale()),
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
         return new ResponseEntity<>(ApiErrors.builder().error(apiError).build(),
@@ -101,8 +102,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                    @NonNull HttpStatus status,
                                                                    @NonNull WebRequest request) {
         ApiError apiError = new ApiError(
-                status, "Nenhum serviço encontrado para requisição '" +
-                ex.getHttpMethod() + "' na url", ex.getRequestURL());
+                status, messageSource.getMessage(
+                "error.handler.out",
+                List.of(ex.getHttpMethod(), ex.getRequestURL()).toArray(),
+                LocaleContextHolder.getLocale()),
+                ((ServletWebRequest) request).getRequest().getRequestURI());
 
         return new ResponseEntity<>(ApiErrors.builder().error(apiError).build(),
                 HttpStatus.BAD_REQUEST);
@@ -115,12 +119,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         List<String> list = new ArrayList<>();
 
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            String restriction = "Valor " + violation.getInvalidValue() + " " + violation.getMessage();
+            String restriction = "Valor: " + violation.getInvalidValue() + " " + violation.getMessage();
             list.add(restriction);
         }
 
         ApiError apiError = new ValidationError(
-                HttpStatus.BAD_REQUEST, "Erro(s) de restrição", list,
+                HttpStatus.BAD_REQUEST, messageSource.getMessage(
+                "error.restriction", null, LocaleContextHolder.getLocale()), list,
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
         return ApiErrors.builder().error(apiError).build();
@@ -141,7 +146,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex,
                                                         WebRequest request) {
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST, ex.getMessage(),
+                HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI());
 
         return new ResponseEntity<>(ApiErrors.builder()
@@ -181,7 +186,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAuthentication(AuthenticationException ex, WebRequest request) {
 
         String message = ex.getLocalizedMessage();
-        log.info("Locale request: " + request.getHeader("Accept-Language"));
 
         if (ex instanceof InsufficientAuthenticationException) {
             message = messageSource.getMessage("InsufficientAuthenticationException.fullAuth",

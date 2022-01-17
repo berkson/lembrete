@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by berkson
@@ -38,8 +39,8 @@ public class BootStrapUsers implements CommandLineRunner {
     private void createBasicRoles() {
         log.info("Salvando autorizações!");
         Authority admin = new Authority("ROLE_ADMIN", "administrador do sistema");
-        Authority supórte = new Authority("ROLE_SUPORTE", "acesso suporte");
-        authorityService.saveAll(Arrays.asList(admin, supórte));
+        Authority support = new Authority("ROLE_SUPORTE", "acesso suporte");
+        authorityService.saveAll(Arrays.asList(admin, support));
     }
 
     private void createAdmin() {
@@ -49,7 +50,7 @@ public class BootStrapUsers implements CommandLineRunner {
         admin.setPassword("$2a$10$erOsX2UaNCRuo5YunF5N5uHmGPhJoDVPqUzIEWM71UiGxIPJfRlZC");
         admin.setEmail("berksonx@yahoo.com.br");
         admin.setName("berkson ximenes soares");
-        admin.setAuthorities(Arrays.asList(authorityService.findById("ROLE_ADMIN").orElseThrow()));
+        admin.setAuthorities(List.of(authorityService.findById("ROLE_ADMIN").orElseThrow()));
 
         userService.save(admin);
     }
