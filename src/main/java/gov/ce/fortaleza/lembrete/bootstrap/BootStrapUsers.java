@@ -29,7 +29,7 @@ public class BootStrapUsers implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (authorityService.count() == 0)
             createBasicRoles();
         if (!userService.exists("87621193387"))
@@ -51,7 +51,7 @@ public class BootStrapUsers implements CommandLineRunner {
         admin.setEmail("berksonx@yahoo.com.br");
         admin.setName("berkson ximenes soares");
         admin.setAuthorities(List.of(authorityService.findById("ROLE_ADMIN").orElseThrow()));
-
+        admin.setEnabled(true);
         userService.save(admin);
     }
 }

@@ -1,4 +1,4 @@
-package gov.ce.fortaleza.lembrete.config.security;
+package gov.ce.fortaleza.lembrete.security.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
@@ -8,7 +8,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Created by berkson
@@ -19,7 +18,7 @@ import java.io.IOException;
 @Component
 public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
-    private HandlerExceptionResolver handlerExceptionResolver;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
     public void afterPropertiesSet() {
@@ -34,7 +33,7 @@ public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
-                         AuthenticationException authException) throws IOException {
+                         AuthenticationException authException) {
         handlerExceptionResolver.resolveException(request, response, null, authException);
     }
 }

@@ -2,13 +2,14 @@ package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.api.models.AdditiveDTO;
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
+import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.common.ContractService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -28,22 +29,22 @@ public class ContractController {
 
     public static final String CONTRACT_API_ROOT = "/api/contract";
     private final ContractService contractService;
-    private final MessageSource messageSource;
 
-    public ContractController(ContractService contractService, MessageSource messageSource) {
+    public ContractController(ContractService contractService) {
         this.contractService = contractService;
-        this.messageSource = messageSource;
     }
 
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADCONTRACT"})
     @PostMapping(value = "/new")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO newContract(@Valid @RequestBody ContractDTO contractDTO) {
 
         ContractDTO contract = contractService.save(contractDTO);
-        log.info("Json: " + contract.toString());
+        log.info("Contrato id: " + contract.getId() + "Salvo!");
         return contract;
     }
 
+    @IsUser
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO getContract(@PathVariable @Min(1) Long id) {
@@ -51,6 +52,7 @@ public class ContractController {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADADITIVO"})
     @PostMapping("/add")
     public ContractDTO add(@Valid @RequestBody AdditiveDTO additiveDTO) {
         return contractService.add(additiveDTO);

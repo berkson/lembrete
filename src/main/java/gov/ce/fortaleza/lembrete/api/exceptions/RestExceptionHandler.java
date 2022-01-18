@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -182,8 +183,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .error(apiError).build(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({AuthenticationException.class})
-    public ResponseEntity<Object> handleAuthentication(AuthenticationException ex, WebRequest request) {
+    @ExceptionHandler({AuthenticationException.class, AccessDeniedException.class})
+    public ResponseEntity<Object> handleAuthentication(Exception ex, WebRequest request) {
 
         String message = ex.getLocalizedMessage();
 
