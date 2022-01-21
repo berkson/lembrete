@@ -40,7 +40,7 @@ public class ContractController {
     public ContractDTO newContract(@Valid @RequestBody ContractDTO contractDTO) {
 
         ContractDTO contract = contractService.save(contractDTO);
-        log.info("Contrato id: " + contract.getId() + "Salvo!");
+        log.info("Contrato id: " + contract.getId() + " Salvo!");
         return contract;
     }
 

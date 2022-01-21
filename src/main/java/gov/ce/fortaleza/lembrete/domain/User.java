@@ -37,7 +37,7 @@ public class User extends BaseClass implements UserDetails, Comparable<User> {
     @Column(columnDefinition = "boolean NOT NULL DEFAULT true")
     @Getter(AccessLevel.NONE)
     private boolean enabled;
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "permissions", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_cod", referencedColumnName = "authority_cod"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "authority_cod"})})

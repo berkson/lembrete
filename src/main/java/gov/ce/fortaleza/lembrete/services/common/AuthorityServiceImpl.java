@@ -1,5 +1,7 @@
 package gov.ce.fortaleza.lembrete.services.common;
 
+import gov.ce.fortaleza.lembrete.api.mappers.AuthorityMapper;
+import gov.ce.fortaleza.lembrete.api.models.AuthorityDTO;
 import gov.ce.fortaleza.lembrete.domain.Authority;
 import gov.ce.fortaleza.lembrete.repositories.AuthorityRepository;
 import org.springframework.stereotype.Service;
@@ -19,25 +21,35 @@ import java.util.stream.StreamSupport;
 public class AuthorityServiceImpl implements AuthorityService {
 
     private final AuthorityRepository authorityRepository;
+    private final AuthorityMapper authorityMapper;
 
-    public AuthorityServiceImpl(AuthorityRepository authorityRepository) {
+    public AuthorityServiceImpl(AuthorityRepository authorityRepository,
+                                AuthorityMapper authorityMapper) {
         this.authorityRepository = authorityRepository;
+        this.authorityMapper = authorityMapper;
+    }
+
+    @Override
+    public AuthorityDTO save(AuthorityDTO entity) {
+        Authority savedAuthority = authorityRepository
+                .save(authorityMapper.authorityDTOToAuthority(entity));
+
+        return authorityMapper.authorityToAuthorityDTO(savedAuthority);
     }
 
     @Override
     @Transactional
-    public Authority save(Authority entity) {
-        return authorityRepository.save(entity);
+    public Optional<AuthorityDTO> findById(String s) {
+
+        return Optional.ofNullable(authorityMapper
+                .authorityToAuthorityDTO(authorityRepository.getById(s)));
     }
 
     @Override
-    public Optional<Authority> findById(String s) {
-        return Optional.ofNullable(authorityRepository.getById(s));
-    }
-
-    @Override
-    public List<Authority> findAll() {
-        return authorityRepository.findAll();
+    public List<AuthorityDTO> findAll() {
+        return authorityRepository.findAll()
+                .stream().map(authorityMapper::authorityToAuthorityDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -46,16 +58,23 @@ public class AuthorityServiceImpl implements AuthorityService {
     }
 
     @Override
-    public List<Authority> findAllByUserId(long id) {
+    @Transactional
+    public List<AuthorityDTO> findAllByUserId(long id) {
         return StreamSupport.stream(authorityRepository
                         .findAuthoritiesByUserId(id).spliterator(), false)
+                .map(authorityMapper::authorityToAuthorityDTO)
                 .collect(Collectors.toList());
     }
 
 
     @Override
     @Transactional
-    public List<Authority> saveAll(Iterable<Authority> authorities) {
-        return authorityRepository.saveAll(authorities);
+    public List<AuthorityDTO> saveAll(Iterable<AuthorityDTO> authorities) {
+        List<Authority> authorityList = StreamSupport.stream(authorities.spliterator(), false)
+                .map(authorityMapper::authorityDTOToAuthority).collect(Collectors.toList());
+
+        return authorityRepository.saveAll(authorityList)
+                .stream().map(authorityMapper::authorityToAuthorityDTO)
+                .collect(Collectors.toList());
     }
 }

@@ -1,8 +1,6 @@
 package gov.ce.fortaleza.lembrete.services.security;
 
-import gov.ce.fortaleza.lembrete.domain.User;
-import gov.ce.fortaleza.lembrete.repositories.UserRepository;
-import gov.ce.fortaleza.lembrete.services.common.AuthorityService;
+import gov.ce.fortaleza.lembrete.services.common.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,14 +19,12 @@ import java.util.Locale;
 @Service("userDetailsService")
 public class LembreteUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final MessageSource messageSource;
-    private final AuthorityService authorityService;
 
-    public LembreteUserDetailsService(UserRepository userRepository, MessageSource messageSource, AuthorityService authorityService) {
-        this.userRepository = userRepository;
+    public LembreteUserDetailsService(UserService userService, MessageSource messageSource) {
+        this.userService = userService;
         this.messageSource = messageSource;
-        this.authorityService = authorityService;
     }
 
 
@@ -36,9 +32,7 @@ public class LembreteUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Buscando usuário: " + username);
         try {
-            User user = userRepository.findByCpf(username);
-            user.setAuthorities(authorityService.findAllByUserId(user.getId()));
-            return user;
+            return userService.findByUsername(username);
         } catch (Exception e) {
             throw new UsernameNotFoundException(messageSource
                     .getMessage("error.missing.user", null, Locale.getDefault()));

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 21:12
  */
 public interface UserRepository extends JpaRepository<User, Long> {
+
     User findByCpf(String cpf);
 
     boolean existsByCpf(String cpf);

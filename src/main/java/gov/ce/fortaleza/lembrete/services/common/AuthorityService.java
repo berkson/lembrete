@@ -1,6 +1,6 @@
 package gov.ce.fortaleza.lembrete.services.common;
 
-import gov.ce.fortaleza.lembrete.domain.Authority;
+import gov.ce.fortaleza.lembrete.api.models.AuthorityDTO;
 
 import java.util.List;
 
@@ -9,10 +9,10 @@ import java.util.List;
  * Date: 13/01/2022
  * Time: 22:55
  */
-public interface AuthorityService extends CrudService<Authority, String> {
+public interface AuthorityService extends CrudService<AuthorityDTO, String> {
     long count();
 
-    List<Authority> findAllByUserId(long id);
+    List<AuthorityDTO> findAllByUserId(long id);
 
-    List<Authority> saveAll(Iterable<Authority> authorities);
+    List<AuthorityDTO> saveAll(Iterable<AuthorityDTO> authorities);
 }

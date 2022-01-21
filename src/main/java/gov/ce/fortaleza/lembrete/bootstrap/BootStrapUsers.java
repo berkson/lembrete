@@ -1,7 +1,7 @@
 package gov.ce.fortaleza.lembrete.bootstrap;
 
-import gov.ce.fortaleza.lembrete.domain.Authority;
-import gov.ce.fortaleza.lembrete.domain.User;
+import gov.ce.fortaleza.lembrete.api.models.AuthorityDTO;
+import gov.ce.fortaleza.lembrete.api.models.UserDTO;
 import gov.ce.fortaleza.lembrete.services.common.AuthorityService;
 import gov.ce.fortaleza.lembrete.services.common.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,14 +38,14 @@ public class BootStrapUsers implements CommandLineRunner {
 
     private void createBasicRoles() {
         log.info("Salvando autorizações!");
-        Authority admin = new Authority("ROLE_ADMIN", "administrador do sistema");
-        Authority support = new Authority("ROLE_SUPORTE", "acesso suporte");
+        AuthorityDTO admin = new AuthorityDTO("ROLE_ADMIN", "administrador do sistema");
+        AuthorityDTO support = new AuthorityDTO("ROLE_SUPORTE", "acesso suporte");
         authorityService.saveAll(Arrays.asList(admin, support));
     }
 
     private void createAdmin() {
         log.info("Salvando usuário administrador");
-        User admin = new User();
+        UserDTO admin = new UserDTO();
         admin.setCpf("87621193387");
         admin.setPassword("$2a$10$erOsX2UaNCRuo5YunF5N5uHmGPhJoDVPqUzIEWM71UiGxIPJfRlZC");
         admin.setEmail("berksonx@yahoo.com.br");
