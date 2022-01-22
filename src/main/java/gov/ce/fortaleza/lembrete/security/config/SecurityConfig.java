@@ -36,16 +36,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.cors().and().authorizeRequests()
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .authenticationEntryPoint(authenticationEntryPoint)

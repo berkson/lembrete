@@ -1,13 +1,16 @@
 package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.api.models.UserDTO;
+import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.common.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
 
 import static gov.ce.fortaleza.lembrete.api.controllers.UserController.USER_ROOT;
 
@@ -16,6 +19,7 @@ import static gov.ce.fortaleza.lembrete.api.controllers.UserController.USER_ROOT
  * Date: 20/01/2022
  * Time: 08:27
  */
+@Slf4j
 @RestController
 @RequestMapping(value = USER_ROOT)
 public class UserController {
@@ -29,7 +33,8 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public UserDTO getUser(Authentication authentication) {
-        return userService.findByCpf(authentication.getName());
+    @IsUser
+    public UserDTO getUser(Principal principal) {
+        return userService.findByCpf(principal.getName());
     }
 }
