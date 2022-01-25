@@ -37,4 +37,14 @@ public class UserController {
     public UserDTO getUser(Principal principal) {
         return userService.findByCpf(principal.getName());
     }
+
+//    @PostMapping(value = "/logout")
+//    @ResponseStatus(HttpStatus.OK)
+//    @CrossOrigin
+//    public void logout(HttpServletRequest request, HttpServletResponse response){
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if(authentication != null){
+//            new SecurityContextLogoutHandler().logout(request, response, authentication);
+//        }
+//    }
 }
