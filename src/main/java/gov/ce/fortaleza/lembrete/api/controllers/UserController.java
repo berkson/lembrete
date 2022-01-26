@@ -5,10 +5,7 @@ import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.common.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -36,6 +33,11 @@ public class UserController {
     @IsUser
     public UserDTO getUser(Principal principal) {
         return userService.findByCpf(principal.getName());
+    }
+
+    @RequestMapping(value = "/csrf", method = RequestMethod.HEAD)
+    @ResponseStatus(HttpStatus.OK)
+    public void head() {
     }
 
 //    @PostMapping(value = "/logout")
