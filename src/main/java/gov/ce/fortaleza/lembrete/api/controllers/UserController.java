@@ -5,8 +5,13 @@ import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.common.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 
 import static gov.ce.fortaleza.lembrete.api.controllers.UserController.USER_ROOT;
@@ -40,13 +45,13 @@ public class UserController {
     public void head() {
     }
 
-//    @PostMapping(value = "/logout")
-//    @ResponseStatus(HttpStatus.OK)
-//    @CrossOrigin
-//    public void logout(HttpServletRequest request, HttpServletResponse response){
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if(authentication != null){
-//            new SecurityContextLogoutHandler().logout(request, response, authentication);
-//        }
-//    }
+    @PostMapping(value = "/logout")
+    @ResponseStatus(HttpStatus.OK)
+    @CrossOrigin
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
+    }
 }
