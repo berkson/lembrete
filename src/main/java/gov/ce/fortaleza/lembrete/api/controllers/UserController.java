@@ -54,9 +54,9 @@ public class UserController {
     @PostMapping(value = "/passrecover")
     @ResponseStatus(HttpStatus.OK)
     public String recoverPassword(@RequestBody @Email String email) throws SendMailException {
+        User user = userService.findByEmail(email)
+                .orElseThrow(EntityNotFoundException::new);
         try {
-            User user = userService.findByEmail(email)
-                    .orElseThrow(EntityNotFoundException::new);
             recoverPasswordService.sendCode(user);
             return messageSource.getMessage("email.send", null,
                     locale);
@@ -66,4 +66,4 @@ public class UserController {
     }
 }
 
-//TODO: falta testar se envia correto e criar o serviço de alteração da senha.
+//TODO: o serviço de alteração da senha.
