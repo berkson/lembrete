@@ -12,44 +12,44 @@ import gov.ce.fortaleza.lembrete.models.Email;
 public interface EmailService {
 
     /**
-     * @param para     para quem é o email
-     * @param assunto  assunto do emaiç
-     * @param mensagem descrição do email
+     * @param para     para quem é o endereço eletrônico
+     * @param assunto  assunto do endereço eletrônico
+     * @param mensagem descrição do endereço eletrônico
      * @throws SendMailException Erro ao enviar email
      */
     void sendSimpleMessage(String para, String assunto, String mensagem)
             throws SendMailException;
 
     /**
-     * @param para       para quem é o email
-     * @param assunto    assunto do email
-     * @param mensagem   descrição do email
-     * @param prioridade prioridade do email
+     * @param para       para quem é o endereço eletrônico
+     * @param assunto    assunto do endereço eletrônico
+     * @param mensagem   descrição do endereço eletrônico
+     * @param prioridade prioridade do endereço eletrônico
      */
     void sendSimpleMessage(String para, String assunto, String mensagem, EmailPriority prioridade)
             throws SendMailException;
 
     /**
-     * @param para     para quem é o email
-     * @param assunto  assunto do emaiç
-     * @param mensagem descrição do email
-     * @throws SendMailException
+     * @param para     para quem é o endereço eletrônico
+     * @param assunto  assunto do endereço eletrônico
+     * @param mensagem descrição do endereço eletrônico
+     * @throws SendMailException Erro ao enviar email
      */
     void sendSimpleMessage(String[] para, String assunto, String mensagem) throws SendMailException;
 
     /**
-     * @param para       para quem é o email
-     * @param assunto    assunto do emaiç
-     * @param mensagem   descrição do email
-     * @param prioridade prioridade do email
-     * @throws SendMailException
+     * @param para       para quem é o endereço eletrônico
+     * @param assunto    assunto do endereço eletrônico
+     * @param mensagem   descrição do endereço eletrônico
+     * @param prioridade prioridade do endereço eletrônico
+     * @throws SendMailException Erro ao enviar email
      */
     void sendSimpleMessage(String[] para, String assunto, String mensagem, EmailPriority prioridade)
             throws SendMailException;
 
     /**
      * @param email email do usuário/pessoa
-     * @throws SendMailException
+     * @throws SendMailException Erro ao enviar email
      */
     void sendSimpleMessage(Email email) throws SendMailException;
 }
