@@ -15,13 +15,12 @@ import javax.mail.internet.MimeMessage;
 
 /**
  * @author Berkson Ximenes
- * @since 14/07/2020
+ * @since 29/01/2022
  */
 @Service
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
-    private final MessageSource messageSource;
     private final String FROM;
     private static final String ENCODE = "UTF-8";
     private final String ERR_MIME;
@@ -29,84 +28,82 @@ public class EmailServiceImpl implements EmailService {
 
     /**
      * @param mailSender    carteiro do java
-     * @param messageSource
+     * @param messageSource mensagens i18n
      */
     public EmailServiceImpl(JavaMailSender mailSender, MessageSource messageSource) {
         super();
         this.mailSender = mailSender;
-        this.messageSource = messageSource;
         this.FROM = messageSource.getMessage("email.from",
                 null, LocaleContextHolder.getLocale());
         this.ERR_MIME = messageSource.getMessage("error.email.mime",
                 null, LocaleContextHolder.getLocale());
     }
 
-    /**
-     * @param para     destinatário do email
-     * @param assunto  assunto do email
-     * @param mensagem descrição do email
-     * @throws SendMailException
-     */
-    @Override
-    public void sendSimpleMessage(String[] para, String assunto,
-                                  String mensagem) throws SendMailException {
-        MimeMessage msg = mailSender.createMimeMessage();
-        MimeMessageHelper helper;
-        try {
-            helper = new MimeMessageHelper(msg, true, ENCODE);
-            helper.setTo(para);
-            helper.setFrom(FROM);
-            helper.setSubject(assunto);
-            helper.setText(mensagem, true);
-        } catch (MessagingException e) {
-            throw new SendMailException(ERR_MIME);
-        }
 
-        mailSender.send(msg);
-    }
-
-    /**
-     * @param para    destinatário do email
-     * @param assunto assunto do email
-     * @param texto   descrição do email
-     * @throws SendMailException
-     */
-    @Override
-    public void sendSimpleMessage(String para, String assunto, String texto)
+    private MimeMessage setArguments(String[] to, String subject, String body)
             throws SendMailException {
         MimeMessage msg = mailSender.createMimeMessage();
         MimeMessageHelper helper;
         try {
             helper = new MimeMessageHelper(msg, true, ENCODE);
-            helper.setTo(para);
+            if (to.length == 1)
+                helper.setTo(to[0]);
+            else
+                helper.setTo(to);
             helper.setFrom(FROM);
-            helper.setSubject(assunto);
-            helper.setText(texto, true);
+            helper.setSubject(subject);
+            helper.setText(body, true);
         } catch (MessagingException e) {
             throw new SendMailException(ERR_MIME);
         }
 
-        mailSender.send(msg);
+        return msg;
+    }
+
+    private String[] generateArray(String to) {
+        String[] array = new String[1];
+        array[0] = to;
+        return array;
     }
 
     /**
-     * @param para       destinatário do email
-     * @param assunto    assunto do email
-     * @param texto      descrição do email
-     * @param prioridade prioridade do email
-     * @throws SendMailException
+     * @param para     destinatário do endereço eletrônico
+     * @param assunto  assunto do endereço eletrônico
+     * @param mensagem descrição do endereço eletrônico
+     * @throws SendMailException Exceção ao enviar endereço eletrônico
+     */
+    @Override
+    public void sendSimpleMessage(String[] para, String assunto,
+                                  String mensagem) throws SendMailException {
+
+        mailSender.send(setArguments(para, assunto, mensagem));
+    }
+
+    /**
+     * @param para    destinatário do endereço eletrônico
+     * @param assunto assunto do endereço eletrônico
+     * @param texto   descrição do endereço eletrônico
+     * @throws SendMailException Exceção ao enviar endereço eletrônico
+     */
+    @Override
+    public void sendSimpleMessage(String para, String assunto, String texto)
+            throws SendMailException {
+
+        mailSender.send(setArguments(generateArray(para), assunto, texto));
+    }
+
+    /**
+     * @param para       destinatário do endereço eletrônico
+     * @param assunto    assunto do endereço eletrônico
+     * @param texto      descrição do endereço eletrônico
+     * @param prioridade prioridade do endereço eletrônico
+     * @throws SendMailException exceção ao enviar endereço eletrônico
      */
     @Override
     public void sendSimpleMessage(String para, String assunto, String texto,
                                   EmailPriority prioridade) throws SendMailException {
-        MimeMessage msg = mailSender.createMimeMessage();
-        MimeMessageHelper helper;
+        MimeMessage msg = setArguments(generateArray(para), assunto, texto);
         try {
-            helper = new MimeMessageHelper(msg, true, ENCODE);
-            helper.setTo(para);
-            helper.setFrom(FROM);
-            helper.setSubject(assunto);
-            helper.setText(texto, true);
             msg.setHeader(PR, prioridade.getPrioridade());
         } catch (MessagingException e) {
             throw new SendMailException(ERR_MIME);
@@ -117,23 +114,17 @@ public class EmailServiceImpl implements EmailService {
     }
 
     /**
-     * @param para       destinatário do email
-     * @param assunto    assunto do email
-     * @param texto      descrição do email
-     * @param prioridade prioridade do email
-     * @throws SendMailException
+     * @param para       destinatário do endereço eletrônico
+     * @param assunto    assunto do endereço eletrônico
+     * @param texto      descrição do endereço eletrônico
+     * @param prioridade prioridade do endereço eletrônico
+     * @throws SendMailException exceção ao enviar endereço eletrônico
      */
     @Override
     public void sendSimpleMessage(String[] para, String assunto,
                                   String texto, EmailPriority prioridade) throws SendMailException {
-        MimeMessage msg = mailSender.createMimeMessage();
-        MimeMessageHelper helper;
+        MimeMessage msg = setArguments(para, assunto, texto);
         try {
-            helper = new MimeMessageHelper(msg, true, ENCODE);
-            helper.setTo(para);
-            helper.setFrom(FROM);
-            helper.setSubject(assunto);
-            helper.setText(texto, true);
             msg.setHeader(PR, prioridade.getPrioridade());
         } catch (MessagingException e) {
             throw new SendMailException(ERR_MIME);
@@ -145,18 +136,13 @@ public class EmailServiceImpl implements EmailService {
 
     /**
      * @param email email do usuário/pessoa
-     * @throws SendMailException
+     * @throws SendMailException Exceção ao enviar endereço eletrônico
      */
     @Override
     public void sendSimpleMessage(Email email) throws SendMailException {
-        MimeMessage msg = mailSender.createMimeMessage();
-        MimeMessageHelper helper;
+        MimeMessage msg = setArguments(email.getTo(), email.getSubject(),
+                email.getMessage().generateText());
         try {
-            helper = new MimeMessageHelper(msg, true, ENCODE);
-            helper.setTo(email.getTo());
-            helper.setFrom(FROM);
-            helper.setSubject(email.getSubject());
-            helper.setText(email.getMessage().generateText(), true);
             msg.setHeader(PR, email.getPriority().toString());
         } catch (MessagingException e) {
             throw new SendMailException(ERR_MIME);
