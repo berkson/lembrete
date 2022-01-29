@@ -35,11 +35,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDTO save(UserDTO entity) {
         User savedUser = userRepository.save(userMapper.userDTOToUser(entity));
         return userMapper.userToUserDTO(savedUser);
     }
 
+    @Override
+    @Transactional
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 
     @Override
     public Optional<UserDTO> findById(Long id) {
@@ -69,6 +75,11 @@ public class UserServiceImpl implements UserService {
                 .stream().map(authorityMapper::authorityDTOToAuthority)
                 .collect(Collectors.toList()));
         return user;
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(userRepository.findByEmail(email));
     }
 
     @Override

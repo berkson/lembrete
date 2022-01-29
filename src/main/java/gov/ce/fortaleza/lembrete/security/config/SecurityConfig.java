@@ -18,7 +18,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -59,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable()
                 //.and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.HEAD, "/api/user/csrf").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/user/passrecover").permitAll()
                 .anyRequest().authenticated().and()
                 .httpBasic()
                 .authenticationEntryPoint(authenticationEntryPoint)
@@ -73,18 +72,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * CORS config - used by cors() in configure() DO NOT CHANGE the METDHO NAME
      *
-     * @return
+     * @return configuration
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "HEAD"));
+        configuration.setAllowedOrigins(List.of("https://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "OPTIONS", "HEAD"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(
                 List.of("X-XSRF-TOKEN", "XSRF-TOKEN", HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE,
                         "X-Requested-With"));
-        configuration.setMaxAge(10l);
+        configuration.setMaxAge(10L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

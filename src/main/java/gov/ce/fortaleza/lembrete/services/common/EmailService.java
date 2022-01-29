@@ -17,7 +17,7 @@ public interface EmailService {
      * @param mensagem descrição do email
      * @throws SendMailException Erro ao enviar email
      */
-    void enviarMsgSimples(String para, String assunto, String mensagem)
+    void sendSimpleMessage(String para, String assunto, String mensagem)
             throws SendMailException;
 
     /**
@@ -26,7 +26,7 @@ public interface EmailService {
      * @param mensagem   descrição do email
      * @param prioridade prioridade do email
      */
-    void enviarMsgSimples(String para, String assunto, String mensagem, EmailPriority prioridade)
+    void sendSimpleMessage(String para, String assunto, String mensagem, EmailPriority prioridade)
             throws SendMailException;
 
     /**
@@ -35,7 +35,7 @@ public interface EmailService {
      * @param mensagem descrição do email
      * @throws SendMailException
      */
-    void enviarMsgSimples(String[] para, String assunto, String mensagem) throws SendMailException;
+    void sendSimpleMessage(String[] para, String assunto, String mensagem) throws SendMailException;
 
     /**
      * @param para       para quem é o email
@@ -44,12 +44,12 @@ public interface EmailService {
      * @param prioridade prioridade do email
      * @throws SendMailException
      */
-    void enviarMsgSimples(String[] para, String assunto, String mensagem, EmailPriority prioridade)
+    void sendSimpleMessage(String[] para, String assunto, String mensagem, EmailPriority prioridade)
             throws SendMailException;
 
     /**
      * @param email email do usuário/pessoa
      * @throws SendMailException
      */
-    void enviarMsgSimples(Email email) throws SendMailException;
+    void sendSimpleMessage(Email email) throws SendMailException;
 }

@@ -4,7 +4,8 @@ package gov.ce.fortaleza.lembrete.services.common;
 import gov.ce.fortaleza.lembrete.enums.EmailPriority;
 import gov.ce.fortaleza.lembrete.exceptions.SendMailException;
 import gov.ce.fortaleza.lembrete.models.Email;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -20,31 +21,35 @@ import javax.mail.internet.MimeMessage;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
-    private static final String FROM = "Sistema de Lembretes <appweb.amc@fortaleza.ce.gov.br>";
+    private final MessageSource messageSource;
+    private final String FROM;
     private static final String ENCODE = "UTF-8";
-    private static final String ERR_MIME = "Erro ao criar Mensagem MIME";
+    private final String ERR_MIME;
     private static final String PR = "X-Priority";
 
     /**
-     *
-     * @param mailSender carteiro do java
+     * @param mailSender    carteiro do java
+     * @param messageSource
      */
-    @Autowired
-    public EmailServiceImpl(JavaMailSender mailSender) {
+    public EmailServiceImpl(JavaMailSender mailSender, MessageSource messageSource) {
         super();
         this.mailSender = mailSender;
+        this.messageSource = messageSource;
+        this.FROM = messageSource.getMessage("email.from",
+                null, LocaleContextHolder.getLocale());
+        this.ERR_MIME = messageSource.getMessage("error.email.mime",
+                null, LocaleContextHolder.getLocale());
     }
 
     /**
-     *
-     * @param para destinatário do email
-     * @param assunto assunto do email
+     * @param para     destinatário do email
+     * @param assunto  assunto do email
      * @param mensagem descrição do email
      * @throws SendMailException
      */
     @Override
-    public void enviarMsgSimples(String[] para, String assunto,
-            String mensagem) throws SendMailException {
+    public void sendSimpleMessage(String[] para, String assunto,
+                                  String mensagem) throws SendMailException {
         MimeMessage msg = mailSender.createMimeMessage();
         MimeMessageHelper helper;
         try {
@@ -61,14 +66,13 @@ public class EmailServiceImpl implements EmailService {
     }
 
     /**
-     *
-     * @param para destinatário do email
+     * @param para    destinatário do email
      * @param assunto assunto do email
-     * @param texto descrição do email
+     * @param texto   descrição do email
      * @throws SendMailException
      */
     @Override
-    public void enviarMsgSimples(String para, String assunto, String texto)
+    public void sendSimpleMessage(String para, String assunto, String texto)
             throws SendMailException {
         MimeMessage msg = mailSender.createMimeMessage();
         MimeMessageHelper helper;
@@ -86,16 +90,15 @@ public class EmailServiceImpl implements EmailService {
     }
 
     /**
-     *
-     * @param para destinatário do email
-     * @param assunto assunto do email
-     * @param texto descrição do email
+     * @param para       destinatário do email
+     * @param assunto    assunto do email
+     * @param texto      descrição do email
      * @param prioridade prioridade do email
      * @throws SendMailException
      */
     @Override
-    public void enviarMsgSimples(String para, String assunto, String texto,
-            EmailPriority prioridade) throws SendMailException {
+    public void sendSimpleMessage(String para, String assunto, String texto,
+                                  EmailPriority prioridade) throws SendMailException {
         MimeMessage msg = mailSender.createMimeMessage();
         MimeMessageHelper helper;
         try {
@@ -114,16 +117,15 @@ public class EmailServiceImpl implements EmailService {
     }
 
     /**
-     *
-     * @param para destinatário do email
-     * @param assunto assunto do email
-     * @param texto descrição do email
+     * @param para       destinatário do email
+     * @param assunto    assunto do email
+     * @param texto      descrição do email
      * @param prioridade prioridade do email
      * @throws SendMailException
      */
     @Override
-    public void enviarMsgSimples(String[] para, String assunto,
-            String texto, EmailPriority prioridade) throws SendMailException {
+    public void sendSimpleMessage(String[] para, String assunto,
+                                  String texto, EmailPriority prioridade) throws SendMailException {
         MimeMessage msg = mailSender.createMimeMessage();
         MimeMessageHelper helper;
         try {
@@ -142,12 +144,11 @@ public class EmailServiceImpl implements EmailService {
     }
 
     /**
-     *
      * @param email email do usuário/pessoa
      * @throws SendMailException
      */
     @Override
-    public void enviarMsgSimples(Email email) throws SendMailException {
+    public void sendSimpleMessage(Email email) throws SendMailException {
         MimeMessage msg = mailSender.createMimeMessage();
         MimeMessageHelper helper;
         try {
@@ -164,7 +165,6 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(msg);
 
     }
-
 
 
 }

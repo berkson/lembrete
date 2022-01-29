@@ -42,7 +42,7 @@ public class SendEmailJob extends QuartzJobBean {
 
         try {
             Email email = new ObjectMapper().readValue(jobDataMap.get("email").toString(), Email.class);
-            emailService.enviarMsgSimples(email);
+            emailService.sendSimpleMessage(email);
         } catch (SendMailException e) {
             log.error("Erro de envio de email: " + e.getMessage());
             throw new JobExecutionException(e);
