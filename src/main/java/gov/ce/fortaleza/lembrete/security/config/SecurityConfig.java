@@ -59,6 +59,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/user/passrecover").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/user/validatecode/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/user/changepass").permitAll()
                 .anyRequest().authenticated().and()
                 .httpBasic()
                 .authenticationEntryPoint(authenticationEntryPoint)

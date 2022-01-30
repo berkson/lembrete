@@ -2,13 +2,16 @@ package gov.ce.fortaleza.lembrete.services.common;
 
 import gov.ce.fortaleza.lembrete.api.mappers.AuthorityMapper;
 import gov.ce.fortaleza.lembrete.api.mappers.UserMapper;
+import gov.ce.fortaleza.lembrete.api.models.CodeVerifyDTO;
 import gov.ce.fortaleza.lembrete.api.models.UserDTO;
 import gov.ce.fortaleza.lembrete.domain.User;
 import gov.ce.fortaleza.lembrete.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -90,5 +93,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean exists(String cpf) {
         return userRepository.existsByCpf(cpf);
+    }
+
+    @Override
+    public Map<String, Boolean> verifyCode(CodeVerifyDTO codeVerifyDTO) {
+        User user = Optional.ofNullable(this.userRepository.findByCpf(codeVerifyDTO.getCpf()))
+                .orElseThrow(EntityNotFoundException::new);
+        return Map.of("isValid", user.getRecoveryCode()
+                .equals(codeVerifyDTO.getCode()));
+    }
+
+    @Override
+    public void changePassword(CodeVerifyDTO codeVerifyDTO) {
+        User user = userRepository.findByCpf(codeVerifyDTO.getCpf());
+        user.setPassword(codeVerifyDTO.getPassword());
+        this.save(user);
     }
 }

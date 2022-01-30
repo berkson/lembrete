@@ -1,12 +1,15 @@
 package gov.ce.fortaleza.lembrete.api.controllers;
 
+import gov.ce.fortaleza.lembrete.api.models.CodeVerifyDTO;
 import gov.ce.fortaleza.lembrete.api.models.UserDTO;
 import gov.ce.fortaleza.lembrete.domain.User;
+import gov.ce.fortaleza.lembrete.exceptions.InvalidRecoveryCodeException;
 import gov.ce.fortaleza.lembrete.exceptions.SendMailException;
 import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.business.RecoverPasswordService;
 import gov.ce.fortaleza.lembrete.services.common.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -14,9 +17,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import java.security.Principal;
 import java.util.Locale;
+import java.util.Map;
 
 import static gov.ce.fortaleza.lembrete.api.controllers.UserController.USER_ROOT;
 
@@ -64,6 +69,26 @@ public class UserController {
             throw new SendMailException("email.not.send");
         }
     }
+
+    @PostMapping(value = "/validatecode/{cpf}")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, Boolean> validateCode(@PathVariable @CPF String cpf,
+                                             @RequestBody String code) {
+        return userService.verifyCode(new CodeVerifyDTO(cpf, code));
+    }
+
+    @PostMapping(value = "/changepass")
+    @ResponseStatus(HttpStatus.OK)
+    public String chagePassword(@Valid @RequestBody CodeVerifyDTO codeVerifyDTO)
+            throws InvalidRecoveryCodeException {
+        if (userService.verifyCode(codeVerifyDTO).get("isValid"))
+            userService.changePassword(codeVerifyDTO);
+        else {
+            throw new InvalidRecoveryCodeException("invalid.code");
+        }
+        return messageSource.getMessage("pass.change", null, locale);
+    }
 }
 
-//TODO: o serviço de alteração da senha.
+//TODO: verificar se a mudança de senha está ok
+
