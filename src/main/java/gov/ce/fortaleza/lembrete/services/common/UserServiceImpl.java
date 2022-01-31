@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
             return Map.of("isValid", user.getRecoveryCode()
                     .equals(codeVerifyDTO.getCode()));
         } else {
-            throw new InvalidRecoveryCodeException("invalid.code");
+            throw new InvalidRecoveryCodeException("gen.new.code");
         }
     }
 

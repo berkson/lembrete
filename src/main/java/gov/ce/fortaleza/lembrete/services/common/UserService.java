@@ -33,6 +33,7 @@ public interface UserService extends CrudService<UserDTO, Long> {
      *
      * @param codeVerifyDTO objeto de verificação de código
      * @return Map com a chave isValid e o valor sendo boolean.
+     * @throws InvalidRecoveryCodeException caso o código no banco seja nulo
      */
     Map<String, Boolean> verifyCode(CodeVerifyDTO codeVerifyDTO) throws InvalidRecoveryCodeException;
 
