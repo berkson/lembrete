@@ -3,6 +3,7 @@ package gov.ce.fortaleza.lembrete.services.common;
 import gov.ce.fortaleza.lembrete.api.models.CodeVerifyDTO;
 import gov.ce.fortaleza.lembrete.api.models.UserDTO;
 import gov.ce.fortaleza.lembrete.domain.User;
+import gov.ce.fortaleza.lembrete.exceptions.InvalidRecoveryCodeException;
 
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public interface UserService extends CrudService<UserDTO, Long> {
      * @param codeVerifyDTO objeto de verificação de código
      * @return Map com a chave isValid e o valor sendo boolean.
      */
-    Map<String, Boolean> verifyCode(CodeVerifyDTO codeVerifyDTO);
+    Map<String, Boolean> verifyCode(CodeVerifyDTO codeVerifyDTO) throws InvalidRecoveryCodeException;
 
     void changePassword(CodeVerifyDTO codeVerifyDTO);
 }

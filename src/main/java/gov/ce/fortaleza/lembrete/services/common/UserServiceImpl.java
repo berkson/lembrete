@@ -5,7 +5,9 @@ import gov.ce.fortaleza.lembrete.api.mappers.UserMapper;
 import gov.ce.fortaleza.lembrete.api.models.CodeVerifyDTO;
 import gov.ce.fortaleza.lembrete.api.models.UserDTO;
 import gov.ce.fortaleza.lembrete.domain.User;
+import gov.ce.fortaleza.lembrete.exceptions.InvalidRecoveryCodeException;
 import gov.ce.fortaleza.lembrete.repositories.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -96,17 +98,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, Boolean> verifyCode(CodeVerifyDTO codeVerifyDTO) {
+    public Map<String, Boolean> verifyCode(CodeVerifyDTO codeVerifyDTO)
+            throws InvalidRecoveryCodeException {
         User user = Optional.ofNullable(this.userRepository.findByCpf(codeVerifyDTO.getCpf()))
                 .orElseThrow(EntityNotFoundException::new);
-        return Map.of("isValid", user.getRecoveryCode()
-                .equals(codeVerifyDTO.getCode()));
+        if (user.getRecoveryCode() != null) {
+            return Map.of("isValid", user.getRecoveryCode()
+                    .equals(codeVerifyDTO.getCode()));
+        } else {
+            throw new InvalidRecoveryCodeException("invalid.code");
+        }
     }
 
     @Override
+    @Transactional
     public void changePassword(CodeVerifyDTO codeVerifyDTO) {
         User user = userRepository.findByCpf(codeVerifyDTO.getCpf());
-        user.setPassword(codeVerifyDTO.getPassword());
+        String encodedPass = BCrypt.hashpw(codeVerifyDTO.getPassword(), BCrypt.gensalt());
+        user.setPassword(encodedPass);
+        user.setRecoveryCode(null);
         this.save(user);
     }
 }

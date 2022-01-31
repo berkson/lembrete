@@ -73,15 +73,16 @@ public class UserController {
     @PostMapping(value = "/validatecode/{cpf}")
     @ResponseStatus(HttpStatus.OK)
     public Map<String, Boolean> validateCode(@PathVariable @CPF String cpf,
-                                             @RequestBody String code) {
+                                             @RequestBody String code)
+            throws InvalidRecoveryCodeException {
         return userService.verifyCode(new CodeVerifyDTO(cpf, code));
     }
 
     @PostMapping(value = "/changepass")
     @ResponseStatus(HttpStatus.OK)
-    public String chagePassword(@Valid @RequestBody CodeVerifyDTO codeVerifyDTO)
+    public String changePassword(@Valid @RequestBody CodeVerifyDTO codeVerifyDTO)
             throws InvalidRecoveryCodeException {
-        if (userService.verifyCode(codeVerifyDTO).get("isValid"))
+        if (codeVerifyDTO.getCode() != null && userService.verifyCode(codeVerifyDTO).get("isValid"))
             userService.changePassword(codeVerifyDTO);
         else {
             throw new InvalidRecoveryCodeException("invalid.code");
@@ -89,6 +90,4 @@ public class UserController {
         return messageSource.getMessage("pass.change", null, locale);
     }
 }
-
-//TODO: verificar se a mudança de senha está ok
 
