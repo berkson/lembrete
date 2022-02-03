@@ -58,13 +58,11 @@ public class UserController {
 
     @PostMapping(value = "/passrecover")
     @ResponseStatus(HttpStatus.OK)
-    public String recoverPassword(@RequestBody @Email String email) throws SendMailException {
+    public void recoverPassword(@RequestBody @Email String email) throws SendMailException {
         User user = userService.findByEmail(email)
                 .orElseThrow(EntityNotFoundException::new);
         try {
             recoverPasswordService.sendCode(user);
-            return messageSource.getMessage("email.send", null,
-                    locale);
         } catch (Exception e) {
             throw new SendMailException("email.not.send");
         }
@@ -80,14 +78,13 @@ public class UserController {
 
     @PostMapping(value = "/changepass")
     @ResponseStatus(HttpStatus.OK)
-    public String changePassword(@Valid @RequestBody CodeVerifyDTO codeVerifyDTO)
+    public void changePassword(@Valid @RequestBody CodeVerifyDTO codeVerifyDTO)
             throws InvalidRecoveryCodeException {
         if (codeVerifyDTO.getCode() != null && userService.verifyCode(codeVerifyDTO).get("isValid"))
             userService.changePassword(codeVerifyDTO);
         else {
             throw new InvalidRecoveryCodeException("invalid.code");
         }
-        return messageSource.getMessage("pass.change", null, locale);
     }
 }
 
