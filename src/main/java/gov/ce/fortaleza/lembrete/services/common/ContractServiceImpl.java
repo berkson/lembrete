@@ -12,6 +12,8 @@ import gov.ce.fortaleza.lembrete.repositories.InterestedRepository;
 import gov.ce.fortaleza.lembrete.services.business.NotifyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -110,6 +112,12 @@ public class ContractServiceImpl implements ContractService {
                 .plusMonths(additiveDTO.getDeadline()));
 
         return this.saveOrUpdateAndSchedule(contract);
+    }
+
+    @Override
+    public Page<ContractDTO> findAll(Pageable pageable) {
+        Page<Contract> contracts = contractRepository.findAll(pageable);
+        return contracts.map(contractMapper::contractToContractDTO);
     }
 
     private ContractDTO saveOrUpdateAndSchedule(Contract contract) {

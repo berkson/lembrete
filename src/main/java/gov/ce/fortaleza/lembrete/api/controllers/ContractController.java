@@ -5,6 +5,11 @@ import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
 import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.common.ContractService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +30,13 @@ import static gov.ce.fortaleza.lembrete.api.controllers.ContractController.CONTR
 @RestController
 @RequestMapping(value = CONTRACT_API_ROOT)
 @Validated
+@PropertySource(value = "classpath:general.properties")
 public class ContractController {
 
     public static final String CONTRACT_API_ROOT = "/api/contract";
     private final ContractService contractService;
+    @Value("${pagination.properties.quantity_per_page}")
+    private int quantityPerPage;
 
     public ContractController(ContractService contractService) {
         this.contractService = contractService;
@@ -54,7 +62,18 @@ public class ContractController {
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADADITIVO"})
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.OK)
     public ContractDTO add(@Valid @RequestBody AdditiveDTO additiveDTO) {
         return contractService.add(additiveDTO);
+    }
+
+    @IsUser
+    @GetMapping(value = "/all")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<ContractDTO> getContracts(@RequestParam(value = "pag", defaultValue = "0") int pag,
+                                          @RequestParam(value = "ord", defaultValue = "contractNumber") String ord,
+                                          @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
+        PageRequest pageRequest = PageRequest.of(pag, this.quantityPerPage, Sort.Direction.valueOf(dir));
+        return contractService.findAll(pageRequest);
     }
 }

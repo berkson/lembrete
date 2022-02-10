@@ -3,6 +3,8 @@ package gov.ce.fortaleza.lembrete.services.common;
 import gov.ce.fortaleza.lembrete.api.models.AdditiveDTO;
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
 import gov.ce.fortaleza.lembrete.domain.Contract;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Created by berkson
@@ -20,4 +22,6 @@ public interface ContractService extends CrudService<ContractDTO, Long> {
      * @return Dto de contrato
      */
     ContractDTO add(AdditiveDTO additiveDTO);
+
+    Page<ContractDTO> findAll(Pageable pageable);
 }
