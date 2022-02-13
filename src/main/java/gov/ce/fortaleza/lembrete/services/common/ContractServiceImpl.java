@@ -115,6 +115,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional
     public Page<ContractDTO> findAll(Pageable pageable) {
         Page<Contract> contracts = contractRepository.findAll(pageable);
         return contracts.map(contractMapper::contractToContractDTO);
