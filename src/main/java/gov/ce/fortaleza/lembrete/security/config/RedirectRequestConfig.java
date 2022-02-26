@@ -46,7 +46,7 @@ public class RedirectRequestConfig {
                 new Connector(CONNECTOR_PROTOCOL);
         connector.setScheme(CONNECTOR_SCHEME);
         connector.setSecure(false);
-        connector.setPort(8080);
+        connector.setPort(8181);
         connector.setRedirectPort(8443);
         return connector;
     }
