@@ -10,10 +10,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -38,6 +35,7 @@ public class ContractDTO extends BaseClass implements Serializable {
     @DateTimeFormat
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty(value = "initial_date")
+    @PastOrPresent(message = "{field.initialDate.PastOrPresent.message}")
     private LocalDate initialDate;
     @DateTimeFormat
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
