@@ -24,6 +24,7 @@ import java.util.Objects;
 @AttributeOverride(name = "id", column = @Column(name = "contract_id"))
 @Table(name = "contracts")
 public class Contract extends BaseClass implements Comparable<Contract> {
+    @Column(unique = true)
     private String contractNumber;
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "company_id", referencedColumnName = "company_id", nullable = false)
