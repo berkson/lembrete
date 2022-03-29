@@ -3,6 +3,7 @@ package gov.ce.fortaleza.lembrete.api.exceptions;
 import gov.ce.fortaleza.lembrete.api.exceptions.models.ApiError;
 import gov.ce.fortaleza.lembrete.api.exceptions.models.ApiErrors;
 import gov.ce.fortaleza.lembrete.api.exceptions.models.ValidationError;
+import gov.ce.fortaleza.lembrete.exceptions.CustomDataIntegrityException;
 import gov.ce.fortaleza.lembrete.exceptions.InvalidRecoveryCodeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -144,8 +145,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .error(apiError).build(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex,
+    @ExceptionHandler({IllegalArgumentException.class, CustomDataIntegrityException.class})
+    public ResponseEntity<Object> handleIllegalArgument(Exception ex,
                                                         WebRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
@@ -156,8 +157,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InvalidRecoveryCodeException.class)
-    public ResponseEntity<Object> handleIllegalArgument(InvalidRecoveryCodeException ex,
-                                                        WebRequest request) {
+    public ResponseEntity<Object> handleInvalidRecoveryCodeArgument(InvalidRecoveryCodeException ex,
+                                                                    WebRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI());

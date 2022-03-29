@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -125,12 +124,8 @@ public class ContractServiceImpl implements ContractService {
     // TODO: verificar https://stackoverflow.com/questions/2109476/how-to-handle-dataintegrityviolationexception-in-spring/42422568#42422568
     // TODO: resolver mensagem de duplicidade de número de contrato
     private ContractDTO saveOrUpdateAndSchedule(Contract contract) {
-        Contract savedContract = null;
-        try {
-            savedContract = contractRepository.save(contract);
-        } catch (ConstraintViolationException e) {
-            log.info("Erro ao salvar: ", e.getCause());
-        }
+        Contract savedContract = savedContract = contractRepository.save(contract);
+
 
         notifyService.verifyAndSchedule(savedContract);
 

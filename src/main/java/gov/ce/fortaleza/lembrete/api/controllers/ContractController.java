@@ -2,11 +2,14 @@ package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.api.models.AdditiveDTO;
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
+import gov.ce.fortaleza.lembrete.exceptions.CustomDataIntegrityException;
 import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.common.ContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -45,9 +48,16 @@ public class ContractController {
     @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADCONTRACT"})
     @PostMapping(value = "/new")
     @ResponseStatus(HttpStatus.OK)
-    public ContractDTO newContract(@Valid @RequestBody ContractDTO contractDTO) {
+    public ContractDTO newContract(@Valid @RequestBody ContractDTO contractDTO) throws CustomDataIntegrityException {
 
-        ContractDTO contract = contractService.save(contractDTO);
+        ContractDTO contract;
+        try {
+            contract = contractService.save(contractDTO);
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomDataIntegrityException("error.dataIntegrity", LocaleContextHolder.getLocale());
+        }
+
+
         log.info("Contrato id: " + contract.getId() + " Salvo!");
         return contract;
     }
