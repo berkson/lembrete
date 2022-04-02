@@ -14,18 +14,20 @@ public class CustomDataIntegrityException extends Exception {
     private static final long serialVersionUID = -7027336526102265522L;
     private final String messageKey;
     private final Locale locale;
+    private final Object[] args;
 
     public CustomDataIntegrityException(String messageKey) {
-        this(messageKey, LocaleContextHolder.getLocale());
+        this(messageKey, null, LocaleContextHolder.getLocale());
     }
 
-    public CustomDataIntegrityException(String messageKey, Locale locale) {
+    public CustomDataIntegrityException(String messageKey, Object[] args, Locale locale) {
         this.messageKey = messageKey;
         this.locale = locale;
+        this.args = args;
     }
 
     public String getLocalizedMessage() {
-        return MessagesUtil.getMessageForLocale(messageKey, locale);
+        return MessagesUtil.getMessageForLocale(messageKey, args, locale);
     }
 
 }

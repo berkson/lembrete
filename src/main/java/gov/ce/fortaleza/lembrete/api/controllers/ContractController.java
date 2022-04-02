@@ -5,10 +5,11 @@ import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
 import gov.ce.fortaleza.lembrete.exceptions.CustomDataIntegrityException;
 import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.common.ContractService;
+import gov.ce.fortaleza.lembrete.services.errors.HandleErrorsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,11 +39,14 @@ public class ContractController {
 
     public static final String CONTRACT_API_ROOT = "/api/contract";
     private final ContractService contractService;
+    @Qualifier(value = "handleContractErrorsImpl")
+    private final HandleErrorsService handleErrorsService;
     @Value("${pagination.properties.quantity_per_page}")
     private int quantityPerPage;
 
-    public ContractController(ContractService contractService) {
+    public ContractController(ContractService contractService, HandleErrorsService handleErrorsService) {
         this.contractService = contractService;
+        this.handleErrorsService = handleErrorsService;
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADCONTRACT"})
@@ -50,13 +54,12 @@ public class ContractController {
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO newContract(@Valid @RequestBody ContractDTO contractDTO) throws CustomDataIntegrityException {
 
-        ContractDTO contract;
+        ContractDTO contract = null;
         try {
             contract = contractService.save(contractDTO);
         } catch (DataIntegrityViolationException e) {
-            throw new CustomDataIntegrityException("error.dataIntegrity", LocaleContextHolder.getLocale());
+            handleErrorsService.handleDataIntegrityErros(e);
         }
-
 
         log.info("Contrato id: " + contract.getId() + " Salvo!");
         return contract;
