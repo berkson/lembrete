@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 22:20
  */
 public interface ContractRepository extends JpaRepository<Contract, Long> {
+    boolean existsContractByContractNumber(String number);
 }

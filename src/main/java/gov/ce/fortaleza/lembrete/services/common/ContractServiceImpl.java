@@ -102,6 +102,11 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public boolean contractExists(String number) {
+        return contractRepository.existsContractByContractNumber(number);
+    }
+
+    @Override
     @Transactional
     public ContractDTO add(AdditiveDTO additiveDTO) {
 
@@ -124,7 +129,7 @@ public class ContractServiceImpl implements ContractService {
     // TODO: verificar https://stackoverflow.com/questions/2109476/how-to-handle-dataintegrityviolationexception-in-spring/42422568#42422568
     // TODO: resolver mensagem de duplicidade de número de contrato
     private ContractDTO saveOrUpdateAndSchedule(Contract contract) {
-        Contract savedContract = savedContract = contractRepository.save(contract);
+        Contract savedContract = contractRepository.save(contract);
 
 
         notifyService.verifyAndSchedule(savedContract);

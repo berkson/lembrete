@@ -15,6 +15,8 @@ public interface ContractService extends CrudService<ContractDTO, Long> {
 
     Contract getById(long id);
 
+    boolean contractExists(String number);
+
     /**
      * Realiza a aditivação do contrato
      *

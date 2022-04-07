@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.Objects;
 
 import static gov.ce.fortaleza.lembrete.api.controllers.ContractController.CONTRACT_API_ROOT;
 
@@ -61,8 +63,17 @@ public class ContractController {
             handleErrorsService.handleDataIntegrityErros(e);
         }
 
-        log.info("Contrato id: " + contract.getId() + " Salvo!");
+        log.info("Contrato id: " + Objects.requireNonNull(contract).getId() + " Salvo!");
         return contract;
+    }
+
+    @IsUser
+    @PostMapping(value = "/check")
+    public ResponseEntity<Object> checkContract(@RequestBody String number) {
+        boolean exists = contractService.contractExists(number);
+        return exists ? new ResponseEntity<>(new CustomDataIntegrityException("invalid.contractNumber",
+                new Object[]{number}).getLocalizedMessage(), HttpStatus.CONFLICT) :
+                new ResponseEntity<>(HttpStatus.OK);
     }
 
     @IsUser

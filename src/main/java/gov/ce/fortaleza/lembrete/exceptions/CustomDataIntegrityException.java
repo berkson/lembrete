@@ -20,6 +20,10 @@ public class CustomDataIntegrityException extends Exception {
         this(messageKey, null, LocaleContextHolder.getLocale());
     }
 
+    public CustomDataIntegrityException(String messageKey, Object[] args) {
+        this(messageKey, args, LocaleContextHolder.getLocale());
+    }
+
     public CustomDataIntegrityException(String messageKey, Object[] args, Locale locale) {
         this.messageKey = messageKey;
         this.locale = locale;
