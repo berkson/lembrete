@@ -70,10 +70,7 @@ public class ContractController {
     @IsUser
     @PostMapping(value = "/check")
     public ResponseEntity<Object> checkContract(@RequestBody String number) {
-        boolean exists = contractService.contractExists(number);
-        return exists ? new ResponseEntity<>(new CustomDataIntegrityException("invalid.contractNumber",
-                new Object[]{number}).getLocalizedMessage(), HttpStatus.CONFLICT) :
-                new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(contractService.contractExists(number), HttpStatus.OK);
     }
 
     @IsUser

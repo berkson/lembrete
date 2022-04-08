@@ -55,6 +55,7 @@ public class InterestedServiceImpl implements InterestedService {
     }
 
     @Override
+    @Transactional
     public Optional<InterestedDTO> findByCpf(String cpf) {
         return interestedRepository.findByCpf(cpf)
                 .map(interestedMapper::interestedToInterestedDTO);
