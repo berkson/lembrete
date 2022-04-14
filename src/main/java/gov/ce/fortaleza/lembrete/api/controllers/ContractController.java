@@ -94,7 +94,7 @@ public class ContractController {
     public Page<ContractDTO> getContracts(@RequestParam(value = "pag", defaultValue = "0") int pag,
                                           @RequestParam(value = "ord", defaultValue = "contractNumber") String ord,
                                           @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
-        PageRequest pageRequest = PageRequest.of(pag, this.quantityPerPage, Sort.Direction.valueOf(dir), ord);
+        PageRequest pageRequest = PageRequest.of(pag, this.quantityPerPage, Sort.Direction.valueOf(dir.toUpperCase()), ord);
         return contractService.findAll(pageRequest);
     }
 }
