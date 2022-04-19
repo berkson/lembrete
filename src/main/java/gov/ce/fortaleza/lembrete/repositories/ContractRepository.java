@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 03/01/2022
  * Time: 22:20
  */
-public interface ContractRepository extends JpaRepository<Contract, Long> {
+public interface ContractRepository extends JpaRepository<Contract, Long>, ContractRepositoryCustom {
     boolean existsContractByContractNumber(String number);
 }

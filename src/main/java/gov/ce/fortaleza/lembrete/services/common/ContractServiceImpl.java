@@ -126,6 +126,12 @@ public class ContractServiceImpl implements ContractService {
         return contracts.map(contractMapper::contractToContractDTO);
     }
 
+    @Override
+    public List<ContractDTO> findAllByContractNumber(int offset, int quantityPerPage, String direction) {
+        List<Contract> contracts = contractRepository.findAllByContractNumber(offset, quantityPerPage, direction);
+        return contracts.stream().map(contractMapper::contractToContractDTO).collect(Collectors.toList());
+    }
+
     // TODO: verificar https://stackoverflow.com/questions/2109476/how-to-handle-dataintegrityviolationexception-in-spring/42422568#42422568
     // TODO: resolver mensagem de duplicidade de número de contrato
     private ContractDTO saveOrUpdateAndSchedule(Contract contract) {
