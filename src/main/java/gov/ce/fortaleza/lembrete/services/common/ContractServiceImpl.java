@@ -13,6 +13,7 @@ import gov.ce.fortaleza.lembrete.services.business.NotifyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -127,13 +128,12 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<ContractDTO> findAllByContractNumber(int offset, int quantityPerPage, String direction) {
-        List<Contract> contracts = contractRepository.findAllByContractNumber(offset, quantityPerPage, direction);
-        return contracts.stream().map(contractMapper::contractToContractDTO).collect(Collectors.toList());
+    @Transactional
+    public Page<ContractDTO> findAllByContractNumber(PageRequest pageRequest, String dir) {
+        Page<Contract> contracts = contractRepository.findAllByContractNumber(pageRequest, dir);
+        return contracts.map(contractMapper::contractToContractDTO);
     }
 
-    // TODO: verificar https://stackoverflow.com/questions/2109476/how-to-handle-dataintegrityviolationexception-in-spring/42422568#42422568
-    // TODO: resolver mensagem de duplicidade de número de contrato
     private ContractDTO saveOrUpdateAndSchedule(Contract contract) {
         Contract savedContract = contractRepository.save(contract);
 

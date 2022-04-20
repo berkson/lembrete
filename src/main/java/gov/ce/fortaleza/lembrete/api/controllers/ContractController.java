@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -24,13 +23,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.List;
 import java.util.Objects;
 
 import static gov.ce.fortaleza.lembrete.api.controllers.ContractController.CONTRACT_API_ROOT;
 
 /**
- * Created by berkson
+ * Created by Berkson Ximenes
  * Date: 03/01/2022
  * Time: 22:52
  */
@@ -98,14 +96,15 @@ public class ContractController {
                                           @RequestParam(value = "ord", defaultValue = ContractController.CONTRACT_NUMBER_PARAM) String ord,
                                           @RequestParam(value = "dir", defaultValue = "DESC") String dir) {
 
-        PageRequest pageRequest = PageRequest.of(pag, this.quantityPerPage, Sort.Direction.valueOf(dir.toUpperCase()), ord);
+        PageRequest pageRequest;
 
-        //TODO: Rethink this. refactor to return a page from the service
         if (ord.equals(ContractController.CONTRACT_NUMBER_PARAM)) {
-            List<ContractDTO> contracts = contractService
-                    .findAllByContractNumber(pag * quantityPerPage, quantityPerPage, dir);
-            return new PageImpl<>(contracts, pageRequest, contracts.size());
+            pageRequest = PageRequest.of(pag, this.quantityPerPage);
+            return contractService
+                    .findAllByContractNumber(pageRequest, dir.toUpperCase());
         }
+
+        pageRequest = PageRequest.of(pag, this.quantityPerPage, Sort.Direction.valueOf(dir.toUpperCase()), ord);
 
         return contractService.findAll(pageRequest);
     }

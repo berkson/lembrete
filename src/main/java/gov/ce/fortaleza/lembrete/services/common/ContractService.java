@@ -4,9 +4,8 @@ import gov.ce.fortaleza.lembrete.api.models.AdditiveDTO;
 import gov.ce.fortaleza.lembrete.api.models.ContractDTO;
 import gov.ce.fortaleza.lembrete.domain.Contract;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * Created by berkson
@@ -29,5 +28,5 @@ public interface ContractService extends CrudService<ContractDTO, Long> {
 
     Page<ContractDTO> findAll(Pageable pageable);
 
-    List<ContractDTO> findAllByContractNumber(int offset, int quantityPerPage, String direction);
+    Page<ContractDTO> findAllByContractNumber(PageRequest pageRequest, String dir);
 }

@@ -1,8 +1,8 @@
 package gov.ce.fortaleza.lembrete.repositories;
 
 import gov.ce.fortaleza.lembrete.domain.Contract;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 /**
  * Created by berkson
@@ -10,5 +10,5 @@ import java.util.List;
  * Time: 23:49
  */
 public interface ContractRepositoryCustom {
-    List<Contract> findAllByContractNumber(int offset, int quantityPerPage, String dir);
+    Page<Contract> findAllByContractNumber(PageRequest pageRequest, String dir);
 }
