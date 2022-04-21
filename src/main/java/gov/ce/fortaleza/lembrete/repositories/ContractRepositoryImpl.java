@@ -12,7 +12,6 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by berkson
@@ -42,7 +41,7 @@ public class ContractRepositoryImpl implements ContractRepositoryCustom {
 
     private Long contractsTotal() {
         final String sql = "SELECT count(*) FROM contracts";
-        Object obj = entityManager.createNativeQuery(sql).getSingleResult();
-        return Optional.ofNullable(((BigInteger) obj).longValue()).orElse(0L);
+        BigInteger quantity = (BigInteger) entityManager.createNativeQuery(sql).getSingleResult();
+        return quantity.longValue();
     }
 }
