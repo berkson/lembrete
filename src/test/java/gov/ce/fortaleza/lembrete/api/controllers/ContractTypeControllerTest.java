@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +23,8 @@ import javax.persistence.EntityNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -38,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Time: 17:15
  */
 class ContractTypeControllerTest {
+    static final String NOT_FOUND = "error.not.found";
 
     @Mock
     ContractTypeService contractTypeService;
@@ -47,9 +51,9 @@ class ContractTypeControllerTest {
 
     @InjectMocks
     ContractTypeController contractTypeController;
-
+    ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
     @InjectMocks
-    RestExceptionHandler restExceptionHandler;
+    RestExceptionHandler restExceptionHandler = new RestExceptionHandler(messageSource);
 
     MockMvc mockMvc;
 
@@ -58,6 +62,10 @@ class ContractTypeControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        messageSource.setDefaultLocale(Locale.getDefault());
+        Properties properties = new Properties();
+        properties.setProperty(ContractTypeControllerTest.NOT_FOUND, "Não encontrado");
+        messageSource.setCommonMessages(properties);
         mockMvc = MockMvcBuilders.standaloneSetup(contractTypeController)
                 .setControllerAdvice(restExceptionHandler).build();
         contractTypeDTO = new ContractTypeDTO(1L,
