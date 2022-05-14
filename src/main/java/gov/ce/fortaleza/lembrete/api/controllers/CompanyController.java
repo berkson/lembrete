@@ -1,6 +1,7 @@
 package gov.ce.fortaleza.lembrete.api.controllers;
 
 import gov.ce.fortaleza.lembrete.api.models.CompanyDTO;
+import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.common.CompanyService;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class CompanyController {
 
     @GetMapping(value = "/{cnpj}")
     @ResponseStatus(HttpStatus.OK)
+    @IsUser
     public CompanyDTO getCompany(@PathVariable @CNPJ String cnpj) {
         return companyService.findByCnpj(cnpj).orElseThrow(EntityNotFoundException::new);
     }

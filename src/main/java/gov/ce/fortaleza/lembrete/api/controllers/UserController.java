@@ -1,5 +1,6 @@
 package gov.ce.fortaleza.lembrete.api.controllers;
 
+import gov.ce.fortaleza.lembrete.api.models.AuthorityDTO;
 import gov.ce.fortaleza.lembrete.api.models.CodeVerifyDTO;
 import gov.ce.fortaleza.lembrete.api.models.UserDTO;
 import gov.ce.fortaleza.lembrete.domain.User;
@@ -7,12 +8,18 @@ import gov.ce.fortaleza.lembrete.exceptions.InvalidRecoveryCodeException;
 import gov.ce.fortaleza.lembrete.exceptions.SendMailException;
 import gov.ce.fortaleza.lembrete.security.annotations.IsUser;
 import gov.ce.fortaleza.lembrete.services.business.RecoverPasswordService;
+import gov.ce.fortaleza.lembrete.services.common.AuthorityService;
+import gov.ce.fortaleza.lembrete.services.common.LdapConversionService;
 import gov.ce.fortaleza.lembrete.services.common.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.ldap.userdetails.LdapUserDetails;
+import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +27,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -38,13 +47,15 @@ public class UserController {
     public static final String USER_ROOT = "/api/user";
 
     private final UserService userService;
+    private final LdapConversionService ldapConversionService;
     private final RecoverPasswordService recoverPasswordService;
     private final MessageSource messageSource;
     private static final Locale locale = LocaleContextHolder.getLocale();
 
-    public UserController(UserService userService, RecoverPasswordService recoverPasswordService,
+    public UserController(UserService userService, LdapConversionService ldapConversionService, RecoverPasswordService recoverPasswordService,
                           MessageSource messageSource) {
         this.userService = userService;
+        this.ldapConversionService = ldapConversionService;
         this.recoverPasswordService = recoverPasswordService;
         this.messageSource = messageSource;
     }
@@ -53,8 +64,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @IsUser
     public UserDTO getUser(Principal principal) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof LdapUserDetailsImpl) {
+            return ldapConversionService.getUserDetails(authentication);
+        }
+
         return userService.findByCpf(principal.getName());
     }
+
 
     @PostMapping(value = "/passrecover")
     @ResponseStatus(HttpStatus.OK)

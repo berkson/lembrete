@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAnyRole('USUARIO', 'ADMIN', 'SUPORTE')")
+@PreAuthorize(value = "hasAnyRole('PUBLICO_SIGECON', 'ADMIN', 'SUPORTE') || hasAnyAuthority('publico_sigecon')")
 public @interface IsUser {
 }

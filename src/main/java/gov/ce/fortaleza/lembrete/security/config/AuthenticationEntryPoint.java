@@ -34,6 +34,7 @@ public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) {
+        System.out.println(authException.fillInStackTrace());
         handlerExceptionResolver.resolveException(request, response, null, authException);
     }
 }

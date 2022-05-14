@@ -1,9 +1,6 @@
 package gov.ce.fortaleza.lembrete.api.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Pattern;
@@ -17,6 +14,7 @@ import javax.validation.constraints.Pattern;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AuthorityDTO {
     @Length(min = 6, max = 100)
     @Pattern(regexp = "^(ROLE_)[A-Z_]+$")

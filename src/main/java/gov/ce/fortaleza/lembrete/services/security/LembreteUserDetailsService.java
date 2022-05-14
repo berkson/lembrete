@@ -30,7 +30,7 @@ public class LembreteUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Buscando usuário: " + username);
+        //log.info("Buscando usuário: " + username);
         try {
             return userService.findByUsername(username);
         } catch (Exception e) {

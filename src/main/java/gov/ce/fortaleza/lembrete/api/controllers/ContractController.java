@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,6 +54,7 @@ public class ContractController {
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADCONTRACT"})
+    @PreAuthorize("hasAnyAuthority('sigecon_cadcontract')")
     @PostMapping(value = "/new")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO newContract(@Valid @RequestBody ContractDTO contractDTO) throws CustomDataIntegrityException {
@@ -83,15 +85,17 @@ public class ContractController {
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADADITIVO"})
+    @PreAuthorize("hasAnyAuthority('sigecon_cadaditivo')")
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO add(@Valid @RequestBody AdditiveDTO additiveDTO) {
         return contractService.add(additiveDTO);
     }
 
-    @IsUser
+    //@IsUser
     @GetMapping(value = "/all")
     @ResponseStatus(HttpStatus.OK)
+    @IsUser
     public Page<ContractDTO> getContracts(@RequestParam(value = "pag", defaultValue = "0") int pag,
                                           @RequestParam(value = "ord", defaultValue = ContractController.CONTRACT_NUMBER_PARAM) String ord,
                                           @RequestParam(value = "dir", defaultValue = "DESC") String dir) {

@@ -2,10 +2,7 @@ package gov.ce.fortaleza.lembrete.api.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ce.fortaleza.lembrete.domain.BaseClass;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -21,6 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserDTO extends BaseClass {
     @CPF
     private String cpf;
@@ -33,4 +31,7 @@ public class UserDTO extends BaseClass {
     private boolean enabled;
     @JsonProperty(value = "roles")
     private List<AuthorityDTO> authorities;
+
+    // For Ldap Use
+    private String username;
 }
