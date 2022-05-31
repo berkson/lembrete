@@ -54,7 +54,7 @@ public class ContractController {
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADCONTRACT"})
-    @PreAuthorize("hasAnyAuthority('sigecon_cadcontract')")
+    @PreAuthorize("hasAnyAuthority('SIGECON_CADCONTRACT')")
     @PostMapping(value = "/new")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO newContract(@Valid @RequestBody ContractDTO contractDTO) throws CustomDataIntegrityException {
@@ -85,7 +85,7 @@ public class ContractController {
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADADITIVO"})
-    @PreAuthorize("hasAnyAuthority('sigecon_cadaditivo')")
+    @PreAuthorize("hasAnyAuthority('SIGECON_CADADITIVO')")
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO add(@Valid @RequestBody AdditiveDTO additiveDTO) {

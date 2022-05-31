@@ -5,5 +5,5 @@ VALUES ('ROLE_ADMIN', 'administrador do sistema'),
        ('ROLE_CADCONTRATYPE', 'permissão cadastramento de tipo de contrato'),
        ('ROLE_CADUSER', 'permissão para cadastrar usuário'),
        ('ROLE_CADADITIVO', 'permissão para cadastrar aditivo'),
-       ('ROLE_PUBLICO_SIGECON', 'permissão básica de usuário do sistema')
+       ('ROLE_SIGECON_PUBLICO', 'permissão básica de usuário do sistema')
 ON CONFLICT (authority_cod) DO NOTHING;

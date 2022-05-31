@@ -61,7 +61,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Transactional
     public List<AuthorityDTO> findAllByUserId(long id) {
         return StreamSupport.stream(authorityRepository
-                        .findAuthoritiesByUserId(id).spliterator(), false)
+                        .findAuthoritiesByUserId(id).spliterator(), true)
                 .map(authorityMapper::authorityToAuthorityDTO)
                 .collect(Collectors.toList());
     }

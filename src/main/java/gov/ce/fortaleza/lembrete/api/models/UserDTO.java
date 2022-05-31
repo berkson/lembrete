@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.Email;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -19,7 +20,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO extends BaseClass {
+public class UserDTO implements Serializable {
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Long id;
     @CPF
     private String cpf;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
