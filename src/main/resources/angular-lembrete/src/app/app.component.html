@@ -1,0 +1,58 @@
+<div id="header">
+  <section id="header-fortaleza">
+    <div class="header-fortaleza-container">
+      <a href="http://www.fortaleza.ce.gov.br"
+        ><img
+          src="../assets/logo-header-fortaleza.png"
+          height="24"
+          class="logo-fortaleza"
+        />
+      </a>
+      <a class="acesso-informacao" href="http://www.fortaleza.ce.gov.br">
+        Prefeitura de Fortaleza
+      </a>
+      <nav class="navigation-header-fortaleza">
+        <button
+          onclick="toggleHandler(this)"
+          class="c-hamburger c-hamburger--rot"
+        >
+          <span>toggle menu</span>
+        </button>
+        <ul class="mobile-hide">
+          <li>
+            <a href="http://acessoainformacao.fortaleza.ce.gov.br"
+              >Acesso à Informação</a
+            >
+          </li>
+          <li>
+            <a href="http://transparencia.fortaleza.ce.gov.br/"
+              >Transparência</a
+            >
+          </li>
+          <li>
+            <a href="http://catalogodeservicos.fortaleza.ce.gov.br/portal"
+              >Serviços</a
+            >
+          </li>
+          <li>
+            <a href="http://legislacao.fortaleza.ce.gov.br">Legislação</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+</div>
+<mat-toolbar color="primary">
+  <span>Sistema de Gerenciamento de Contratos</span>
+  <span class="toolbar-spacer"></span>
+  <a
+    (click)="exit()"
+    style="cursor: pointer"
+    alt="Sair"
+    title="Sair"
+    *ngIf="authenticated()"
+  >
+    <mat-icon class="toolbar-icon" matTooltip="Sair"> exit_to_app </mat-icon>
+  </a>
+</mat-toolbar>
+<router-outlet></router-outlet>

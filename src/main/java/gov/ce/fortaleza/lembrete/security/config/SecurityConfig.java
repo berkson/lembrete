@@ -1,6 +1,7 @@
 package gov.ce.fortaleza.lembrete.security.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -65,9 +66,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable()
                 //.and()
                 .authorizeRequests()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/passrecover").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/validatecode/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/changepass").permitAll()
+                .antMatchers("/index.html", "/","/favicon.ico",
+                        "/*.css", "/*.js*", "/assets/**").permitAll()
                 .anyRequest().authenticated().and()
                 .httpBasic()
                 .authenticationEntryPoint(authenticationEntryPoint)
