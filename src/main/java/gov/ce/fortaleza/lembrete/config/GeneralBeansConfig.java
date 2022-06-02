@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
 import org.springframework.validation.beanvalidation.SpringConstraintValidatorFactory;
 
 import javax.validation.Validation;
@@ -21,6 +22,9 @@ import javax.validation.ValidatorFactory;
 @Slf4j
 @Configuration
 public class GeneralBeansConfig {
+
+    private static final String DEFAULT_SRC_SELF_POLICY = "default-src 'self'; frame-ancestors 'self'; " +
+            "form-action 'self'";
 
     /*
      * Permite que a fábrica de validadores do hibernate suporte injeção de
@@ -43,6 +47,11 @@ public class GeneralBeansConfig {
                         "classpath:org/springframework/security/messages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
+    }
+
+    @Bean
+    public ContentSecurityPolicyHeaderWriter writer(){
+        return new ContentSecurityPolicyHeaderWriter(DEFAULT_SRC_SELF_POLICY);
     }
 
 }

@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -17,11 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
 
 /**
  * Created by berkson
@@ -40,11 +35,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final ContentSecurityPolicyHeaderWriter writer;
 
     public SecurityConfig(UserDetailsService userDetailsService,
-                          AuthenticationEntryPoint authenticationEntryPoint) {
+                          AuthenticationEntryPoint authenticationEntryPoint, ContentSecurityPolicyHeaderWriter writer) {
         this.userDetailsService = userDetailsService;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.writer = writer;
     }
 
     @Override
@@ -61,16 +58,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.cors()
-//                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and().csrf().disable()
-                //.and()
+        http.headers().addHeaderWriter(writer).and()
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
                 .authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/passrecover").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/validatecode/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/changepass").permitAll()
-                .antMatchers("/index.html", "/","/favicon.ico",
+                .antMatchers("/index.html", "/", "/favicon.ico", "/home", "/login",
                         "/*.css", "/*.js*", "/assets/**").permitAll()
                 .anyRequest().authenticated().and()
                 .httpBasic()
@@ -80,26 +76,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true);
 
 
-    }
-
-    /**
-     * CORS config - used by cors() in configure() DO NOT CHANGE the METDHO NAME
-     *
-     * @return configuration
-     */
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://localhost:4200"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "OPTIONS", "HEAD"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(
-                List.of("X-XSRF-TOKEN", "XSRF-TOKEN", HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE,
-                        "X-Requested-With"));
-        configuration.setMaxAge(10L);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Bean
