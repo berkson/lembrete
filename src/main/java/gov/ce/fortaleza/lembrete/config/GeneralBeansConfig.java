@@ -23,9 +23,6 @@ import javax.validation.ValidatorFactory;
 @Configuration
 public class GeneralBeansConfig {
 
-    private static final String DEFAULT_SRC_SELF_POLICY = "default-src 'self'; frame-ancestors 'self'; " +
-            "form-action 'self'";
-
     /*
      * Permite que a fábrica de validadores do hibernate suporte injeção de
      * dependência do spring
@@ -47,11 +44,6 @@ public class GeneralBeansConfig {
                         "classpath:org/springframework/security/messages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
-    }
-
-    @Bean
-    public ContentSecurityPolicyHeaderWriter writer(){
-        return new ContentSecurityPolicyHeaderWriter(DEFAULT_SRC_SELF_POLICY);
     }
 
 }

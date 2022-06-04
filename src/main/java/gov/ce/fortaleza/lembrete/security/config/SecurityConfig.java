@@ -4,17 +4,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.authentication.AuthenticationManagerFactoryBean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
 
@@ -31,34 +34,23 @@ import org.springframework.security.web.header.writers.ContentSecurityPolicyHead
         securedEnabled = true,
         prePostEnabled = true
 )
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final ContentSecurityPolicyHeaderWriter writer;
+    private static final String DEFAULT_SRC_SELF_POLICY = "default-src 'self'; frame-ancestors 'self'; " +
+            "form-action 'self'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; " +
+            "style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com";
 
     public SecurityConfig(UserDetailsService userDetailsService,
-                          AuthenticationEntryPoint authenticationEntryPoint, ContentSecurityPolicyHeaderWriter writer) {
+                          AuthenticationEntryPoint authenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.authenticationEntryPoint = authenticationEntryPoint;
-        this.writer = writer;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
-        ActiveDirectoryLdapAuthenticationProvider authenticationProvider =
-                new ActiveDirectoryLdapAuthenticationProvider("amc.fortaleza.ce.gov.br", "ldap://172.30.186.40:389/");
-        authenticationProvider.setConvertSubErrorCodesToExceptions(true);
-        authenticationProvider.setUseAuthenticationRequestCredentials(true);
-        auth.authenticationProvider(authenticationProvider);
-    }
-
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-
-        http.headers().addHeaderWriter(writer).and()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.headers().addHeaderWriter(writer()).and()
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
                 .authorizeRequests()
@@ -75,11 +67,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true);
 
+        return http.build();
+    }
 
+    @Bean
+    @Primary
+    AuthenticationManagerBuilder authenticationManager(AuthenticationManagerBuilder auth, PasswordEncoder passwordEncoder)
+            throws Exception {
+        ActiveDirectoryLdapAuthenticationProvider authenticationProvider =
+                new ActiveDirectoryLdapAuthenticationProvider("amc.fortaleza.ce.gov.br", "ldap://172.30.186.40:389/");
+        authenticationProvider.setConvertSubErrorCodesToExceptions(true);
+        authenticationProvider.setUseAuthenticationRequestCredentials(true);
+
+        return auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder)
+                .and().authenticationProvider(authenticationProvider);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ContentSecurityPolicyHeaderWriter writer() {
+        return new ContentSecurityPolicyHeaderWriter(DEFAULT_SRC_SELF_POLICY);
     }
 }
