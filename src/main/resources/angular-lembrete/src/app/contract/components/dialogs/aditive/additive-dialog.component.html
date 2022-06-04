@@ -1,0 +1,9 @@
+<div>
+  <form [formGroup]="additiveForm">
+    <mat-form-field>
+      <mat-label>Quantidade de Meses</mat-label>
+      <input matInput placeholder="Tempo em meses" formControlName="months" required>
+    </mat-form-field>
+  </form>
+  <button mat-raised-button color="accent" (click)="callAdditivate()">Salvar</button>
+</div>

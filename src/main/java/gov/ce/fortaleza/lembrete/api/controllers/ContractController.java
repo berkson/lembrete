@@ -53,8 +53,7 @@ public class ContractController {
         this.handleErrorsService = handleErrorsService;
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADCONTRACT"})
-    @PreAuthorize("hasAnyAuthority('SIGECON_CADCONTRACT')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPORTE', 'ROLE_CADCONTRACT') || hasAnyAuthority('SIGECON_CADCONTRACT')")
     @PostMapping(value = "/new")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO newContract(@Valid @RequestBody ContractDTO contractDTO) throws CustomDataIntegrityException {
@@ -84,8 +83,7 @@ public class ContractController {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_SUPORTE", "ROLE_CADADITIVO"})
-    @PreAuthorize("hasAnyAuthority('SIGECON_CADADITIVO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPORTE', 'ROLE_CADADITIVO') || hasAnyAuthority('SIGECON_CADADITIVO')")
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
     public ContractDTO add(@Valid @RequestBody AdditiveDTO additiveDTO) {

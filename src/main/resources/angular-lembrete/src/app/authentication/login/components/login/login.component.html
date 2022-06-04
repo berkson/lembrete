@@ -1,0 +1,45 @@
+<div class="login-div" fxLayout="row" fxLayoutAlign="center center">
+  <form [formGroup]="form" (submit)="login()" novalidate>
+    <mat-list>
+
+      <mat-list-item>
+        <div>
+          <div [class]="!cpfDisabled ? 'hidden' : ''" [hidden]="!cpfDisabled">
+            <mat-form-field>
+              <input matInput placeholder="Nome De Usuário" formControlName="username" />
+            </mat-form-field>
+          </div>
+          <div [class]="cpfDisabled ? 'hidden' : ''" [hidden]="cpfDisabled">
+            <mat-form-field>
+              <input matInput placeholder="CPF" formControlName="username" [errorStateMatcher]="errorStateMatcher"
+                simple-mask="999.999.999-99" />
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-list-item>
+        <mat-form-field>
+          <input type="password" matInput placeholder="Senha" formControlName="password" />
+        </mat-form-field>
+        <span matTooltip="Senha deve conter ao menos 6 caracteres">
+          <mat-icon (click)="changeLoginOptionState()">help</mat-icon>
+        </span>
+      </mat-list-item>
+      <mat-list-item fxLayoutAlign="center">
+        <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">
+          Entrar
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <a mat-button class="div-mat-list-forgot" color="primary" routerLink="/login/forgotpass">
+          Esqueceu sua senha?
+        </a>
+      </mat-list-item>
+      <div [class]="!loginOption ? 'hidden' : ''">
+        <mat-list-item>
+          <mat-checkbox (change)="enableCpfLogin()">CPF Login</mat-checkbox>
+        </mat-list-item>
+      </div>
+    </mat-list>
+  </form>
+</div>

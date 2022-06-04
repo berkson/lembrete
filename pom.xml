@@ -10,9 +10,16 @@
     </parent>
     <groupId>gov.ce.fortaleza</groupId>
     <artifactId>lembrete</artifactId>
+    <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>lembrete</name>
     <description>lembrete</description>
+    <developers>
+        <developer>
+            <name>Berkson Ximenes Soares</name>
+            <email>berkson.soares@amc.fortaleza.ce.gov.br</email>
+        </developer>
+    </developers>
     <properties>
         <java.version>11</java.version>
         <java.compiler.target>11</java.compiler.target>
@@ -97,6 +104,24 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>ng</executable>
+                    <workingDirectory>src/main/resources/angular-lembrete</workingDirectory>
+                    <arguments>build</arguments>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

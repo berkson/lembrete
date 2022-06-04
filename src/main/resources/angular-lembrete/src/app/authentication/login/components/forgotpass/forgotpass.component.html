@@ -1,0 +1,24 @@
+<div class="forgot-div" fxLayout="row" fxLayoutAlign="center center">
+  <form [formGroup]="form" (submit)="forgot()" novalidate>
+    <mat-list>
+      <mat-list-item>
+        <mat-form-field>
+          <input matInput placeholder="email" formControlName="email" />
+        </mat-form-field>
+        <span matTooltip="Será enviado um código de recuperação para seu email">
+          <mat-icon>help</mat-icon>
+        </span>
+      </mat-list-item>
+      <mat-list-item fxLayoutAlign="center">
+        <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">
+          Enviar
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <a mat-button class="div-mat-list-informcode" color="primary" routerLink="/login/informcode">
+          Informar código
+        </a>
+      </mat-list-item>
+    </mat-list>
+  </form>
+</div>

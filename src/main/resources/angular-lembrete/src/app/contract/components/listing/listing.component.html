@@ -1,0 +1,78 @@
+<a color="accent" mat-raised-button routerLink="/contract/register">
+  Adicionar Contrato
+</a>
+<div class="table-container mat-elevation-z5">
+  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="order()">
+    <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+    <tr mat-row class="selected-row" (click)="printRow(row)" *matRowDef="let row; columns: columns"></tr>
+
+    <ng-container *ngIf="isAdmin()" matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="id">
+        Id
+      </th>
+      <td mat-cell *matCellDef="let contract">
+        {{ contract.id }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="contract_number">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="contractNumber">
+        Número
+      </th>
+      <td mat-cell *matCellDef="let contract">
+        {{ contract.contractNumber }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="initial_date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="initialDate">
+        Data Inicial
+      </th>
+      <td mat-cell *matCellDef="let contract">
+        {{ contract.initialDate | brDate }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="final_date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="finalDate">
+        Data Final
+      </th>
+      <td mat-cell *matCellDef="let contract">
+        {{ contract.finalDate | brDate }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="contract_type">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="contractType">
+        Tipo
+      </th>
+      <td mat-cell *matCellDef="let contract">
+        {{ contract.contractType.description }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="company">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="company">
+        Empresa
+      </th>
+      <td mat-cell *matCellDef="let contract">
+        {{ contract.company.name }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>
+        Ações
+      </th>
+      <td mat-cell *matCellDef="let contract">
+        <button class="aditive-btn" [disabled]="showButton(contract)" mat-raised-button color="primary"
+          (click)="showDialog($event, contract)">Aditivar</button>
+      </td>
+    </ng-container>
+  </table>
+
+
+  <mat-paginator #paginator (page)="queryData()" [length]="itemCount" [pageIndex]="index" [pageSize]="5"
+    [pageSizeOptions]="[5, 10, 15, 25]">
+  </mat-paginator>
+</div>
