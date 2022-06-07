@@ -14,10 +14,10 @@ import javax.sql.DataSource;
  * Time: 14:16
  */
 @Configuration
-@Profile({"default", "dev"})
-@PropertySource("classpath:dbsigecon-dev.properties")
+@Profile({"prod"})
+@PropertySource("classpath:dbsigecon-prod.properties")
 @EnableAutoConfiguration
-public class DataBaseConfig {
+public class DataBaseConfigProd {
 
     @Value("${db.user}")
     private String user;
