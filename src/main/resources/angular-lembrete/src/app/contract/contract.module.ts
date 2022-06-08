@@ -29,15 +29,17 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NgxMaskModule } from 'ngx-mask';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [ContractComponent, ListingComponent, RegisterComponent, ContractDialogComponent, AditiveDialogComponent],
   imports: [
-    CommonModule,
-    FlexLayoutModule,
     RouterModule,
-    MatButtonModule,
+    BrowserModule,
+    CommonModule,
     MatListModule,
+    MatDialogModule,
+    MatButtonModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
@@ -49,12 +51,12 @@ import { NgxMaskModule } from 'ngx-mask';
     MatDatepickerModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    SharedModule,
     MatStepperModule,
     MatCardModule,
+    SharedModule,
     ContractRoutingModule,
+    FlexLayoutModule,
     NgxMaskModule,
-    MatDialogModule,
   ],
   providers: [
     ContractService,

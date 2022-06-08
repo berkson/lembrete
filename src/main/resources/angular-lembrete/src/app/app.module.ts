@@ -36,6 +36,8 @@ import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { RouterModule } from '@angular/router';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import {APP_BASE_HREF} from "@angular/common";
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
@@ -44,17 +46,17 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
   imports: [
     NgxMaskModule.forRoot(),
     BrowserModule,
+    RouterModule,
     BrowserAnimationsModule,
     HttpClientModule,
     HttpClientXsrfModule,
-    BrowserAnimationsModule,
+    MatListModule,
     MatToolbarModule,
-    MatTableModule,
     MatIconModule,
     MatTableModule,
     MatSortModule,
     MatSnackBarModule,
-    MatListModule,
+    MatFormFieldModule,
     LoginModule,
     LoginRoutingModule,
     FlexLayoutModule,
@@ -78,7 +80,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { strict: true } },
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     { provide: MatPaginatorIntl, useClass: PtBrMatPaginatorIntl },
-    { provide: APP_BASE_HREF, useValue: './' }
   ],
   bootstrap: [AppComponent],
 })
